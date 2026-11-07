@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ const defaultDb = {
     ],
     clients: [],
     records: [],
+    receivables: [],
     company: {
         name: 'Profiltros Hogar, C.A.',
         rif: 'J-50150423-7',
@@ -34,7 +36,9 @@ function readDb() {
         fs.writeFileSync(DB_FILE, JSON.stringify(defaultDb, null, 2));
     }
     try {
-        return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+        if (!data.receivables) data.receivables = [];
+        return data;
     } catch (e) {
         return defaultDb;
     }
@@ -60,7 +64,6 @@ function authMiddleware(req, res, next) {
     return res.status(401).json({ error: 'Credenciales inválidas' });
 }
 
-// Rutas públicas que no requieren token obligatorio o se manejan de forma directa
 app.use((req, res, next) => {
     if (req.path === '/' || req.path === '/index.html' || req.path === '/api/login' || req.path.startsWith('/api/accounts/') || req.path === '/api/logo' || req.path === '/api/backup') {
         return next();
@@ -115,12 +118,12 @@ app.get('/api/data', (req, res) => {
     res.json({
         clients: db.clients,
         records: db.records,
+        receivables: db.receivables || [],
         company: db.company,
         logoVersion: db.logoVersion
     });
 });
 
-// Ruta para descargar el database.json completo con absolutamente todo
 app.get('/api/backup', (req, res) => {
     const db = readDb();
     res.json(db);
@@ -168,6 +171,65 @@ app.delete('/api/records/:id', (req, res) => {
     db.records = db.records.filter(r => r.id != id);
     writeDb(db);
     res.json({ success: true });
+});
+
+// Cuentas por cobrar (Receivables)
+app.put('/api/receivables/:id', (req, res) => {
+    const id = req.params.id;
+    const recData = req.body;
+    const db = readDb();
+    if (!db.receivables) db.receivables = [];
+    const index = db.receivables.findIndex(r => r.id == id);
+    if (index !== -1) {
+        db.receivables[index] = recData;
+    } else {
+        db.receivables.push(recData);
+    }
+    writeDb(db);
+    res.json({ success: true });
+});
+
+app.delete('/api/receivables/:id', (req, res) => {
+    const id = req.params.id;
+    const db = readDb();
+    if (!db.receivables) db.receivables = [];
+    db.receivables = db.receivables.filter(r => r.id != id);
+    writeDb(db);
+    res.json({ success: true });
+});
+
+// Envío de correo electrónico para recordatorio de cobro
+app.post('/api/receivables/send-email', async (req, res) => {
+    const { to, clientName, concept, amountUsd, dueDate, companyName } = req.body;
+    if (!to) {
+        return res.status(400).json({ error: 'El cliente no tiene un correo electrónico configurado.' });
+    }
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.SMTP_USER || 'tu-correo@gmail.com',
+            pass: process.env.SMTP_PASS || 'tu-contraseña-de-aplicacion'
+        }
+    });
+
+    const mailOptions = {
+        from: `"${companyName || 'Profiltros Hogar, C.A.'}" <${process.env.SMTP_USER || 'tu-correo@gmail.com'}>`,
+        to: to,
+        subject: `Recordatorio de Pago Pendiente - ${companyName || 'Profiltros Hogar, C.A.'}`,
+        text: `Estimado/a ${clientName},\n\nLe escribimos de parte de ${companyName || 'Profiltros Hogar, C.A.'} para recordarle que tiene un saldo pendiente por concepto de "${concept}" por un monto de $${Number(amountUsd).toFixed(2)} USD.\n\nLa fecha límite acordada para su pago es el ${dueDate}.\n\nAgradecemos su pronta cancelación.\n\n¡Gracias!`
+    };
+
+    try {
+        if (!process.env.SMTP_USER) {
+            return res.json({ success: true, message: 'Simulación: Correo guardado/enviado (Configure variables SMTP_USER y SMTP_PASS para envío real).' });
+        }
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'Correo enviado exitosamente al cliente.' });
+    } catch (error) {
+        console.error('Error al enviar correo:', error);
+        res.status(500).json({ error: 'No se pudo enviar el correo electrónico. Verifique la configuración SMTP.' });
+    }
 });
 
 app.put('/api/settings/company', (req, res) => {

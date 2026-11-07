@@ -184,7 +184,7 @@
                     </div>
 
                     <!-- Botón para descargar database.json completo -->
-                    <button onclick="downloadFullDatabaseBackup()" class="shrink-0 bg-emerald-600/90 hover:bg-emerald-700 text-white p-2.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold border border-emerald-300/30 shadow-md" title="Descargar database.json con absolutamente todo">
+                    <button onclick="downloadFullDatabaseBackup()" class="shrink-0 bg-emerald-600/90 hover:bg-emerald-700 text-white p-2.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold border border-emerald-300/30 shadow-md" title="Descargar database.json completo">
                         <i data-lucide="database" class="w-4 h-4"></i> <span class="hidden sm:inline">database.json</span>
                     </button>
 
@@ -201,44 +201,51 @@
 
         <!-- MENÚ PRINCIPAL -->
         <main id="menu-view" class="flex-1 flex items-center justify-center p-4">
-            <div class="max-w-5xl w-full text-center">
+            <div class="max-w-6xl w-full text-center">
                 <h2 class="text-xl md:text-3xl font-bold text-slate-800 mb-1 md:mb-2">Bienvenido, Elias</h2>
                 <p class="text-slate-600 mb-5 md:mb-8 text-sm md:text-base font-medium">Selecciona la opción que deseas realizar</p>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
-                    <button onclick="openSection('sec-clientes')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
-                        <div class="p-4 bg-cyan-100/80 group-hover:bg-cyan-500 text-cyan-600 group-hover:text-white rounded-2xl transition shadow-inner">
-                            <i data-lucide="user-plus" class="w-8 h-8 md:w-10 md:h-10"></i>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+                    <button onclick="openSection('sec-clientes')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-5 shadow-xl transition group flex flex-col items-center justify-center gap-3 border border-cyan-200">
+                        <div class="p-3.5 bg-cyan-100/80 group-hover:bg-cyan-500 text-cyan-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="user-plus" class="w-7 h-7 md:w-8 md:h-8"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-cyan-700">Agregar Clientes</span>
+                        <span class="text-xs md:text-sm font-bold text-slate-800 group-hover:text-cyan-700">Agregar Clientes</span>
                     </button>
 
-                    <button onclick="openSection('sec-mantenimiento')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
-                        <div class="p-4 bg-teal-100/80 group-hover:bg-teal-500 text-teal-600 group-hover:text-white rounded-2xl transition shadow-inner">
-                            <i data-lucide="wrench" class="w-8 h-8 md:w-10 md:h-10"></i>
+                    <button onclick="openSection('sec-mantenimiento')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-5 shadow-xl transition group flex flex-col items-center justify-center gap-3 border border-cyan-200">
+                        <div class="p-3.5 bg-teal-100/80 group-hover:bg-teal-500 text-teal-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="wrench" class="w-7 h-7 md:w-8 md:h-8"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-teal-700">Agendar Mantenimiento</span>
+                        <span class="text-xs md:text-sm font-bold text-slate-800 group-hover:text-teal-700">Agendar Mantenimiento</span>
                     </button>
 
-                    <button onclick="openSection('sec-proximos')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
-                        <div class="p-4 bg-sky-100/80 group-hover:bg-sky-500 text-sky-600 group-hover:text-white rounded-2xl transition shadow-inner">
-                            <i data-lucide="clock" class="w-8 h-8 md:w-10 md:h-10"></i>
+                    <button onclick="openSection('sec-proximos')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-5 shadow-xl transition group flex flex-col items-center justify-center gap-3 border border-cyan-200">
+                        <div class="p-3.5 bg-sky-100/80 group-hover:bg-sky-500 text-sky-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="clock" class="w-7 h-7 md:w-8 md:h-8"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-sky-700">Consultar Próximo Mantenimiento</span>
+                        <span class="text-xs md:text-sm font-bold text-slate-800 group-hover:text-sky-700">Consultar Próximo Mantenimiento</span>
                     </button>
 
-                    <button onclick="openSection('sec-realizados')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
-                        <div class="p-4 bg-emerald-100/80 group-hover:bg-emerald-500 text-emerald-600 group-hover:text-white rounded-2xl transition shadow-inner">
-                            <i data-lucide="check-circle-2" class="w-8 h-8 md:w-10 md:h-10"></i>
+                    <button onclick="openSection('sec-realizados')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-5 shadow-xl transition group flex flex-col items-center justify-center gap-3 border border-cyan-200">
+                        <div class="p-3.5 bg-emerald-100/80 group-hover:bg-emerald-500 text-emerald-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="check-circle-2" class="w-7 h-7 md:w-8 md:h-8"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-emerald-700">Trabajos Realizados</span>
+                        <span class="text-xs md:text-sm font-bold text-slate-800 group-hover:text-emerald-700">Trabajos Realizados</span>
                     </button>
 
-                    <button onclick="openSection('sec-lista-clientes')" class="col-span-2 md:col-span-1 glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
-                        <div class="p-4 bg-indigo-100/80 group-hover:bg-indigo-500 text-indigo-600 group-hover:text-white rounded-2xl transition shadow-inner">
-                            <i data-lucide="book-user" class="w-8 h-8 md:w-10 md:h-10"></i>
+                    <button onclick="openSection('sec-cobrar')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-5 shadow-xl transition group flex flex-col items-center justify-center gap-3 border border-cyan-200">
+                        <div class="p-3.5 bg-amber-100/80 group-hover:bg-amber-500 text-amber-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="wallet" class="w-7 h-7 md:w-8 md:h-8"></i>
                         </div>
-                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-indigo-700">Lista de Clientes</span>
+                        <span class="text-xs md:text-sm font-bold text-slate-800 group-hover:text-amber-700">Clientes por Cobrar</span>
+                    </button>
+
+                    <button onclick="openSection('sec-lista-clientes')" class="col-span-2 md:col-span-1 glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-5 shadow-xl transition group flex flex-col items-center justify-center gap-3 border border-cyan-200">
+                        <div class="p-3.5 bg-indigo-100/80 group-hover:bg-indigo-500 text-indigo-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="book-user" class="w-7 h-7 md:w-8 md:h-8"></i>
+                        </div>
+                        <span class="text-xs md:text-sm font-bold text-slate-800 group-hover:text-indigo-700">Lista de Clientes</span>
                     </button>
                 </div>
             </div>
@@ -265,6 +272,10 @@
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Teléfono / WhatsApp</label>
                             <input type="text" id="reg-client-phone" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ej: 04121234567">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Correo Electrónico (Para recordatorios)</label>
+                            <input type="email" id="reg-client-email" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="cliente@correo.com">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Fecha de Registro</label>
@@ -298,12 +309,90 @@
                                     <th class="p-3.5">Nombre</th>
                                     <th class="p-3.5">Ubicación</th>
                                     <th class="p-3.5">Teléfono</th>
+                                    <th class="p-3.5">Correo</th>
                                     <th class="p-3.5">Cliente Desde</th>
                                     <th class="p-3.5 text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="clients-table" class="md:divide-y divide-cyan-100/60"></tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN: CLIENTES POR COBRAR -->
+            <div id="sec-cobrar" class="section-block hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Formulario de Deuda -->
+                    <div class="glass-panel rounded-3xl shadow-xl p-4 md:p-6 lg:col-span-1">
+                        <h2 id="receivable-form-title" class="text-lg font-bold mb-4 flex items-center gap-2 text-amber-900">
+                            <i data-lucide="wallet" class="text-amber-600"></i> Registrar Cuenta por Cobrar
+                        </h2>
+                        <form id="receivable-form" class="space-y-3">
+                            <input type="hidden" id="edit-receivable-id" value="">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Seleccionar Cliente</label>
+                                <select id="recv-client" onchange="onReceivableClientChange()" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none">
+                                    <option value="">Seleccione un cliente...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Correo Electrónico (Notificaciones)</label>
+                                <input type="email" id="recv-email" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none" placeholder="correo@cliente.com">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">¿De qué es la deuda? (Concepto)</label>
+                                <input type="text" id="recv-concept" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none" placeholder="Ej: Cambio de cartuchos / Repuesto">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Monto ($ USD)</label>
+                                <input type="number" step="0.01" id="recv-amount" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none" placeholder="0.00">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">¿Qué día le toca pagar?</label>
+                                <input type="date" id="recv-due-date" onchange="suggestReminderDate()" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Fecha para Recordatorio / Enviar Aviso</label>
+                                <input type="date" id="recv-reminder-date" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none">
+                                <p class="text-[10px] text-amber-700 mt-1">Por defecto se sugiere 1 día antes del pago.</p>
+                            </div>
+                            <div class="pt-2 flex gap-2">
+                                <button type="submit" class="flex-1 bg-gradient-to-r from-amber-600 to-orange-500 text-white font-bold py-2.5 rounded-xl shadow-md text-sm flex items-center justify-center gap-2">
+                                    <i data-lucide="save" class="w-4 h-4"></i> <span id="btn-save-recv-text">Guardar Deuda</span>
+                                </button>
+                                <button type="button" id="btn-cancel-recv" onclick="cancelReceivableEdit()" class="hidden bg-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-sm">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Lista / Tabla de Cuentas por Cobrar -->
+                    <div class="glass-panel rounded-3xl shadow-xl overflow-hidden lg:col-span-2 flex flex-col">
+                        <div class="p-4 border-b border-amber-200/60 bg-amber-50/50 flex flex-wrap justify-between items-center gap-3">
+                            <div>
+                                <h2 class="text-base md:text-lg font-bold text-amber-900 flex items-center gap-2">
+                                    <i data-lucide="credit-card"></i> Estado de Cuentas por Cobrar
+                                </h2>
+                                <p class="text-xs text-amber-700 font-medium">Total pendiente por cobrar: <span id="total-receivable-amount" class="font-bold">$0.00</span></p>
+                            </div>
+                            <input type="search" id="recv-search" oninput="renderReceivablesTable()" placeholder="Buscar cliente o concepto..." class="bg-white/80 border border-amber-200 rounded-xl p-2 text-sm outline-none w-full sm:w-60">
+                        </div>
+                        <div class="md:overflow-x-auto flex-1">
+                            <table class="responsive-table w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-amber-100/40 text-amber-900 font-semibold border-b border-amber-200/60">
+                                        <th class="p-3.5">Cliente / Correo</th>
+                                        <th class="p-3.5">Concepto</th>
+                                        <th class="p-3.5">Monto ($)</th>
+                                        <th class="p-3.5">Fecha Pago</th>
+                                        <th class="p-3.5">Aviso Programado</th>
+                                        <th class="p-3.5">Estado</th>
+                                        <th class="p-3.5 text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="receivables-table" class="md:divide-y divide-amber-100/60"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -328,7 +417,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Fecha del Trabajo</label>
-                            <input type="date" id="service-date" onchange="handleDateChange()" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                            <input type="date" id="service-date" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Hora</label>
@@ -360,7 +449,6 @@
                         <div id="bcv-container" class="md:col-span-2">
                             <label class="block text-sm font-medium text-slate-700 mb-1">Tasa BCV Aplicada (Bs/$)</label>
                             <input type="number" step="0.01" id="bcv-applied" class="w-full bg-cyan-100/50 border border-cyan-200 rounded-xl p-2.5 font-semibold text-cyan-900">
-                            <p id="bcv-date-info" class="text-xs text-cyan-700 mt-1 font-medium"></p>
                         </div>
 
                         <div class="md:col-span-2 pt-2 flex gap-3">
@@ -375,11 +463,6 @@
 
             <!-- SECCIÓN 3: CONSULTAR PRÓXIMO MANTENIMIENTO -->
             <div id="sec-proximos" class="section-block hidden space-y-6">
-                <div id="alerts-container" class="hidden glass-panel bg-amber-50/80 border border-amber-200 rounded-3xl p-4 shadow-md">
-                    <h3 class="text-amber-800 font-bold flex items-center gap-2 mb-2"><i data-lucide="bell-ring"></i> Avisos Importantes</h3>
-                    <ul id="alerts-list" class="list-disc list-inside text-amber-700 text-sm space-y-1"></ul>
-                </div>
-
                 <div class="glass-panel rounded-3xl shadow-xl overflow-hidden">
                     <div class="p-4 border-b border-cyan-200/60 bg-cyan-50/50 flex flex-wrap justify-between items-center gap-2">
                         <h2 class="text-base md:text-lg font-bold text-cyan-900 flex items-center gap-2">
@@ -474,9 +557,6 @@
                         <h2 class="text-base md:text-lg font-bold text-cyan-900 flex items-center gap-2">
                             <i data-lucide="check-circle-2" class="text-emerald-600"></i> Historial de Trabajos Realizados
                         </h2>
-                        <button type="button" onclick="downloadHistoryNote()" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm py-2.5 px-4 rounded-xl shadow-md flex items-center gap-2">
-                            <i data-lucide="image-down" class="w-4 h-4"></i> Descargar Nota (PNG)
-                        </button>
                     </div>
                     <div class="md:overflow-x-auto">
                         <table class="responsive-table w-full text-left border-collapse text-sm">
@@ -516,21 +596,6 @@
     </div>
 
     <!-- Modales -->
-    <div id="next-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="glass-panel bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md">
-            <h3 class="text-lg font-bold mb-3 text-cyan-900" id="next-modal-title">Programar Siguiente Mantenimiento</h3>
-            <input type="hidden" id="next-modal-id" value="">
-            <p id="next-modal-info" class="text-sm text-slate-600 mb-4"></p>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Fecha</label>
-            <input type="date" id="next-modal-date" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
-            <div class="flex gap-3 mt-5">
-                <button type="button" onclick="saveNextMaintenance()" class="flex-1 bg-cyan-600 text-white font-bold py-2.5 rounded-xl shadow-md">Guardar</button>
-                <button type="button" onclick="closeNextMaintenanceModal()" class="bg-slate-300 text-slate-700 font-bold py-2.5 px-5 rounded-xl">Cancelar</button>
-            </div>
-            <button type="button" id="next-modal-finish" onclick="finishWithoutNext()" class="hidden w-full mt-3 text-sm font-semibold text-slate-600 hover:text-rose-600 border border-slate-200 rounded-xl py-2">Finalizar sin próximo mantenimiento</button>
-        </div>
-    </div>
-
     <div id="client-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
         <form id="client-edit-form" class="glass-panel bg-white rounded-3xl shadow-2xl p-6 w-full max-w-lg">
             <h3 class="text-lg font-bold mb-4 text-cyan-900">Editar Cliente</h3>
@@ -539,6 +604,7 @@
                 <input type="text" id="edit-client-name" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Nombre">
                 <input type="text" id="edit-client-location" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ubicación">
                 <input type="text" id="edit-client-phone" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Teléfono">
+                <input type="email" id="edit-client-email" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Correo">
                 <input type="date" id="edit-client-date" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
             </div>
             <div class="flex gap-3 mt-5">
@@ -585,9 +651,8 @@
         let currentBcvRate = 0;
         let clients = [];
         let records = [];
+        let receivables = [];
         let currentRealized = [];
-        let currentRealizedMonth = '';
-        let currentRealizedKey = 'todos';
         let authToken = sessionStorage.getItem('profiltros_auth') || '';
 
         function setSyncStatus(state) {
@@ -664,6 +729,7 @@
             const data = await api('data');
             clients = data.clients || [];
             records = data.records || [];
+            receivables = data.receivables || [];
             if (data.company && typeof data.company === 'object') {
                 COMPANY_FIELDS.forEach(f => { if (typeof data.company[f] === 'string') COMPANY[f] = data.company[f]; });
             }
@@ -672,14 +738,6 @@
                 applyLogo(data.logoVersion ? '/api/logo?v=' + data.logoVersion : null, data.logoVersion);
             }
             setSyncStatus('saved');
-        }
-
-        async function syncFromServer() {
-            if (sessionStorage.getItem('profiltros_logged') !== 'true' || saveQueue.length) return;
-            try {
-                await loadData(false);
-                refreshAll();
-            } catch (e) {}
         }
 
         lucide.createIcons();
@@ -829,6 +887,8 @@
             const today = new Date().toISOString().split('T')[0];
             const f = document.getElementById('service-date');
             if (f && !f.value) f.value = today;
+            const regDate = document.getElementById('reg-client-date');
+            if (regDate && !regDate.value) regDate.value = today;
         }
 
         function showMainMenu() {
@@ -845,11 +905,13 @@
             document.querySelectorAll('.section-block').forEach(el => el.classList.add('hidden'));
             document.getElementById(secId).classList.remove('hidden');
             if (secId === 'sec-mantenimiento') setDefaultServiceDate();
-            if (secId === 'sec-clientes') setDefaultClientDate();
+            if (secId === 'sec-clientes') setDefaultServiceDate();
             if (secId === 'sec-realizados') renderRealizedTable();
+            if (secId === 'sec-cobrar') renderReceivablesSelectAndTable();
             lucide.createIcons();
         }
 
+        // CLIENTES
         document.getElementById('client-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const c = {
@@ -857,16 +919,247 @@
                 name: document.getElementById('reg-client-name').value,
                 location: document.getElementById('reg-client-location').value,
                 phone: document.getElementById('reg-client-phone').value,
+                email: document.getElementById('reg-client-email').value,
                 registeredAt: document.getElementById('reg-client-date').value || todayStr()
             };
             clients.push(c);
             saveItem('clients', c);
             this.reset();
-            setDefaultClientDate();
+            setDefaultServiceDate();
             refreshAll();
             alert("¡Cliente registrado!");
         });
 
+        function renderClientsTable() {
+            const tbody = document.getElementById('clients-table');
+            const q = (document.getElementById('clients-search').value || '').toLowerCase();
+            const list = clients.filter(c => [c.name, c.location, c.phone, c.email].some(v => String(v || '').toLowerCase().includes(q)));
+            document.getElementById('clients-count').textContent = `(${clients.length})`;
+            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-slate-400">Sin resultados.</td></tr>` : '';
+            list.forEach(c => {
+                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
+                    <td data-label="Nombre" class="td-main p-3.5 font-semibold">${escHtml(c.name)}</td>
+                    <td data-label="Ubicación" class="p-3.5">${escHtml(c.location)}</td>
+                    <td data-label="Teléfono" class="p-3.5">${escHtml(c.phone)}</td>
+                    <td data-label="Correo" class="p-3.5">${escHtml(c.email || 'No registrado')}</td>
+                    <td data-label="Desde" class="p-3.5">${escHtml(c.registeredAt)}</td>
+                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
+                        <button onclick="openClientModal(${c.id})" class="text-amber-600"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="deleteClient(${c.id})" class="text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+            });
+            lucide.createIcons();
+        }
+
+        function openClientModal(id) {
+            const c = clients.find(x => x.id == id);
+            if (!c) return;
+            document.getElementById('edit-client-id').value = c.id;
+            document.getElementById('edit-client-name').value = c.name;
+            document.getElementById('edit-client-location').value = c.location;
+            document.getElementById('edit-client-phone').value = c.phone;
+            document.getElementById('edit-client-email').value = c.email || '';
+            document.getElementById('edit-client-date').value = c.registeredAt || '';
+            document.getElementById('client-modal').classList.remove('hidden');
+        }
+
+        function closeClientModal() { document.getElementById('client-modal').classList.add('hidden'); }
+
+        document.getElementById('client-edit-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const c = clients.find(x => x.id == document.getElementById('edit-client-id').value);
+            if (!c) return closeClientModal();
+            c.name = document.getElementById('edit-client-name').value;
+            c.location = document.getElementById('edit-client-location').value;
+            c.phone = document.getElementById('edit-client-phone').value;
+            c.email = document.getElementById('edit-client-email').value;
+            c.registeredAt = document.getElementById('edit-client-date').value;
+            saveItem('clients', c);
+            closeClientModal();
+            refreshAll();
+        });
+
+        function deleteClient(id) {
+            if (confirm("¿Eliminar cliente?")) {
+                clients = clients.filter(c => c.id !== id);
+                deleteItem('clients', id);
+                refreshAll();
+            }
+        }
+
+        function renderClientSelect() {
+            const select = document.getElementById('service-client');
+            select.innerHTML = `<option value="">Seleccione un cliente...</option>`;
+            clients.forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${escHtml(c.name)} - (${escHtml(c.location)})</option>`;
+            });
+        }
+
+        // LÓGICA DE CUENTAS POR COBRAR (RECEIVABLES)
+        function renderReceivablesSelectAndTable() {
+            const select = document.getElementById('recv-client');
+            select.innerHTML = `<option value="">Seleccione un cliente...</option>`;
+            clients.forEach(c => {
+                select.innerHTML += `<option value="${c.id}" data-email="${c.email || ''}">${escHtml(c.name)}</option>`;
+            });
+            renderReceivablesTable();
+        }
+
+        function onReceivableClientChange() {
+            const select = document.getElementById('recv-client');
+            const opt = select.options[select.selectedIndex];
+            const email = opt.getAttribute('data-email') || '';
+            document.getElementById('recv-email').value = email;
+        }
+
+        function suggestReminderDate() {
+            const dueDateVal = document.getElementById('recv-due-date').value;
+            if (!dueDateVal) return;
+            const due = new Date(dueDateVal);
+            due.setDate(due.getDate() - 1); // Sugerir 1 día antes
+            document.getElementById('recv-reminder-date').value = due.toISOString().split('T')[0];
+        }
+
+        document.getElementById('receivable-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-receivable-id').value;
+            const clientId = document.getElementById('recv-client').value;
+            const client = clients.find(c => c.id == clientId);
+            if (!client) return alert("Seleccione un cliente válido.");
+
+            const recv = {
+                id: editId ? Number(editId) : Date.now(),
+                clientId: client.id,
+                clientName: client.name,
+                email: document.getElementById('recv-email').value,
+                concept: document.getElementById('recv-concept').value,
+                amountUsd: parseFloat(document.getElementById('recv-amount').value) || 0,
+                dueDate: document.getElementById('recv-due-date').value,
+                reminderDate: document.getElementById('recv-reminder-date').value,
+                status: 'pendiente'
+            };
+
+            if (editId) {
+                const idx = receivables.findIndex(r => r.id == editId);
+                if (idx !== -1) {
+                    recv.status = receivables[idx].status; // conservar estado anterior
+                    receivables[idx] = recv;
+                }
+            } else {
+                receivables.push(recv);
+            }
+
+            saveItem('receivables', recv);
+            cancelReceivableEdit();
+            renderReceivablesTable();
+        });
+
+        function cancelReceivableEdit() {
+            document.getElementById('edit-receivable-id').value = '';
+            document.getElementById('receivable-form').reset();
+            document.getElementById('btn-save-recv-text').textContent = "Guardar Deuda";
+            document.getElementById('btn-cancel-recv').classList.add('hidden');
+        }
+
+        function editReceivable(id) {
+            const r = receivables.find(x => x.id == id);
+            if (!r) return;
+            document.getElementById('edit-receivable-id').value = r.id;
+            document.getElementById('recv-client').value = r.clientId;
+            document.getElementById('recv-email').value = r.email || '';
+            document.getElementById('recv-concept').value = r.concept;
+            document.getElementById('recv-amount').value = r.amountUsd;
+            document.getElementById('recv-due-date').value = r.dueDate;
+            document.getElementById('recv-reminder-date').value = r.reminderDate || '';
+            document.getElementById('btn-save-recv-text').textContent = "Actualizar Deuda";
+            document.getElementById('btn-cancel-recv').classList.remove('hidden');
+        }
+
+        function markReceivablePaid(id) {
+            const r = receivables.find(x => x.id == id);
+            if (!r) return;
+            if (confirm(`¿Marcar la deuda de "${r.clientName}" como pagada?`)) {
+                r.status = 'pagado';
+                saveItem('receivables', r);
+                renderReceivablesTable();
+            }
+        }
+
+        function deleteReceivable(id) {
+            if (confirm("¿Eliminar esta cuenta por cobrar?")) {
+                receivables = receivables.filter(r => r.id !== id);
+                deleteItem('receivables', id);
+                renderReceivablesTable();
+            }
+        }
+
+        async function sendEmailReminder(id) {
+            const r = receivables.find(x => x.id == id);
+            if (!r) return;
+            if (!r.email) {
+                alert("Este cliente no tiene un correo electrónico configurado.");
+                return;
+            }
+            if (!confirm(`¿Enviar aviso de cobro por correo a ${r.email}?`)) return;
+
+            try {
+                const res = await fetch('/api/receivables/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + authToken
+                    },
+                    body: JSON.stringify({
+                        to: r.email,
+                        clientName: r.clientName,
+                        concept: r.concept,
+                        amountUsd: r.amountUsd,
+                        dueDate: r.dueDate,
+                        companyName: COMPANY.name
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(data.message || "Aviso enviado correctamente.");
+                } else {
+                    alert(data.error || "Error al enviar el correo.");
+                }
+            } catch (err) {
+                alert("Error de conexión al enviar el correo.");
+            }
+        }
+
+        function renderReceivablesTable() {
+            const tbody = document.getElementById('receivables-table');
+            const q = (document.getElementById('recv-search').value || '').toLowerCase();
+            const list = receivables.filter(r => [r.clientName, r.concept, r.email].some(v => String(v || '').toLowerCase().includes(q)));
+            
+            const pendingTotal = receivables.filter(r => r.status === 'pendiente').reduce((acc, r) => acc + (r.amountUsd || 0), 0);
+            document.getElementById('total-receivable-amount').textContent = `$${pendingTotal.toFixed(2)}`;
+
+            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No hay cuentas por cobrar registradas.</td></tr>` : '';
+            list.forEach(r => {
+                const isPaid = r.status === 'pagado';
+                tbody.innerHTML += `<tr class="hover:bg-amber-50/40 ${isPaid ? 'opacity-60 bg-slate-50/50' : ''}">
+                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(r.clientName)}<br><span class="text-xs font-normal text-slate-500">${escHtml(r.email || 'Sin correo')}</span></td>
+                    <td data-label="Concepto" class="p-3.5">${escHtml(r.concept)}</td>
+                    <td data-label="Monto" class="p-3.5 font-bold text-amber-700">$${Number(r.amountUsd).toFixed(2)}</td>
+                    <td data-label="Fecha Pago" class="p-3.5">${escHtml(r.dueDate)}</td>
+                    <td data-label="Aviso" class="p-3.5">${escHtml(r.reminderDate || 'N/A')}</td>
+                    <td data-label="Estado" class="p-3.5"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${isPaid ? 'Pagado' : 'Pendiente'}</span></td>
+                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-1.5 justify-end">
+                        <button onclick="sendEmailReminder(${r.id})" class="bg-blue-600 text-white p-1.5 rounded-lg text-xs flex items-center gap-1" title="Enviar aviso por correo"><i data-lucide="mail" class="w-3.5 h-3.5"></i></button>
+                        ${!isPaid ? `<button onclick="markReceivablePaid(${r.id})" class="bg-emerald-600 text-white p-1.5 rounded-lg text-xs" title="Marcar como pagado"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>` : ''}
+                        <button onclick="editReceivable(${r.id})" class="bg-amber-500 text-white p-1.5 rounded-lg text-xs"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="deleteReceivable(${r.id})" class="text-rose-600 p-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </td>
+                </tr>`;
+            });
+            lucide.createIcons();
+        }
+
+        // MANTENIMIENTOS Y OTROS
         document.getElementById('service-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const editId = document.getElementById('edit-record-id').value;
@@ -960,99 +1253,11 @@
             renderClientSelect();
             renderRecordsTable();
             renderRealizedTable();
-            checkAlerts();
+            renderReceivablesSelectAndTable();
         }
 
         function escHtml(v) {
             return String(v ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-        }
-
-        function renderClientsTable() {
-            const tbody = document.getElementById('clients-table');
-            const q = (document.getElementById('clients-search').value || '').toLowerCase();
-            const list = clients.filter(c => [c.name, c.location, c.phone].some(v => String(v || '').toLowerCase().includes(q)));
-            document.getElementById('clients-count').textContent = `(${clients.length})`;
-            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-slate-400">Sin resultados.</td></tr>` : '';
-            list.forEach(c => {
-                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
-                    <td data-label="Nombre" class="td-main p-3.5 font-semibold">${escHtml(c.name)}</td>
-                    <td data-label="Ubicación" class="p-3.5">${escHtml(c.location)}</td>
-                    <td data-label="Teléfono" class="p-3.5">${escHtml(c.phone)}</td>
-                    <td data-label="Desde" class="p-3.5">${escHtml(c.registeredAt)}</td>
-                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
-                        <button onclick="openClientModal(${c.id})" class="text-amber-600"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                        <button onclick="deleteClient(${c.id})" class="text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`;
-            });
-            lucide.createIcons();
-        }
-
-        function openClientModal(id) {
-            const c = clients.find(x => x.id == id);
-            if (!c) return;
-            document.getElementById('edit-client-id').value = c.id;
-            document.getElementById('edit-client-name').value = c.name;
-            document.getElementById('edit-client-location').value = c.location;
-            document.getElementById('edit-client-phone').value = c.phone;
-            document.getElementById('edit-client-date').value = c.registeredAt || '';
-            document.getElementById('client-modal').classList.remove('hidden');
-        }
-
-        function closeClientModal() { document.getElementById('client-modal').classList.add('hidden'); }
-
-        document.getElementById('client-edit-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const c = clients.find(x => x.id == document.getElementById('edit-client-id').value);
-            if (!c) return closeClientModal();
-            c.name = document.getElementById('edit-client-name').value;
-            c.location = document.getElementById('edit-client-location').value;
-            c.phone = document.getElementById('edit-client-phone').value;
-            c.registeredAt = document.getElementById('edit-client-date').value;
-            saveItem('clients', c);
-            closeClientModal();
-            refreshAll();
-        });
-
-        function deleteClient(id) {
-            if (confirm("¿Eliminar cliente?")) {
-                clients = clients.filter(c => c.id !== id);
-                deleteItem('clients', id);
-                refreshAll();
-            }
-        }
-
-        function renderClientSelect() {
-            const select = document.getElementById('service-client');
-            select.innerHTML = `<option value="">Seleccione un cliente...</option>`;
-            clients.forEach(c => {
-                select.innerHTML += `<option value="${c.id}">${escHtml(c.name)} - (${escHtml(c.location)})</option>`;
-            });
-        }
-
-        function renderRecordsTable() {
-            const tbody = document.getElementById('records-table');
-            const pending = records.filter(r => !r.isCompleted);
-            tbody.innerHTML = pending.length === 0 ? `<tr><td colspan="10" class="p-4 text-center text-slate-400">No hay registros pendientes.</td></tr>` : '';
-            pending.forEach(rec => {
-                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
-                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(rec.client)}</td>
-                    <td data-label="Ubicación" class="p-3.5">${escHtml(rec.location)}</td>
-                    <td data-label="Trabajo" class="p-3.5">${escHtml(rec.work)}</td>
-                    <td data-label="Fecha" class="p-3.5">${escHtml(rec.serviceDate)}</td>
-                    <td data-label="Pago" class="p-3.5">${escHtml(rec.paymentType)}</td>
-                    <td data-label="USD" class="p-3.5">$${rec.costUsd.toFixed(2)}</td>
-                    <td data-label="Bs" class="p-3.5">${rec.paymentType === 'bcv' ? (rec.costUsd * rec.bcvRate).toFixed(2) + ' Bs' : 'N/A'}</td>
-                    <td data-label="Próximo" class="p-3.5">${escHtml(rec.nextServiceDate || 'No aplica')}</td>
-                    <td data-label="Estado" class="p-3.5">Pendiente</td>
-                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
-                        <button onclick="markAsCompleted(${rec.id})" class="bg-teal-500 text-white p-1 rounded-lg"><i data-lucide="check" class="w-4 h-4"></i></button>
-                        <button onclick="editRecord(${rec.id})" class="bg-amber-500 text-white p-1 rounded-lg"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                        <button onclick="deleteRecord(${rec.id})" class="text-rose-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`;
-            });
-            lucide.createIcons();
         }
 
         function deleteRecord(id) {
@@ -1065,11 +1270,6 @@
 
         function todayStr(d = new Date()) {
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        function setDefaultClientDate() {
-            const f = document.getElementById('reg-client-date');
-            if (f && !f.value) f.value = todayStr();
         }
 
         function onPeriodChange() {
@@ -1093,7 +1293,6 @@
                 list = list.filter(r => r.client.toLowerCase().includes(clientQuery));
             }
 
-            currentRealized = list;
             let totalUsd = list.reduce((acc, r) => acc + (r.costUsd || 0), 0);
             let totalBcv = list.filter(r => r.paymentType === 'bcv').reduce((acc, r) => acc + (r.costUsd || 0), 0);
             let totalDivisa = list.filter(r => r.paymentType !== 'bcv').reduce((acc, r) => acc + (r.costUsd || 0), 0);
@@ -1125,6 +1324,31 @@
         function updateObservation(id, val) {
             const rec = records.find(r => r.id === id);
             if (rec) { rec.observations = val; saveItem('records', rec); }
+        }
+
+        function renderRecordsTable() {
+            const tbody = document.getElementById('records-table');
+            const pending = records.filter(r => !r.isCompleted);
+            tbody.innerHTML = pending.length === 0 ? `<tr><td colspan="10" class="p-4 text-center text-slate-400">No hay registros pendientes.</td></tr>` : '';
+            pending.forEach(rec => {
+                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
+                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(rec.client)}</td>
+                    <td data-label="Ubicación" class="p-3.5">${escHtml(rec.location)}</td>
+                    <td data-label="Trabajo" class="p-3.5">${escHtml(rec.work)}</td>
+                    <td data-label="Fecha" class="p-3.5">${escHtml(rec.serviceDate)}</td>
+                    <td data-label="Pago" class="p-3.5">${escHtml(rec.paymentType)}</td>
+                    <td data-label="USD" class="p-3.5">$${rec.costUsd.toFixed(2)}</td>
+                    <td data-label="Bs" class="p-3.5">${rec.paymentType === 'bcv' ? (rec.costUsd * rec.bcvRate).toFixed(2) + ' Bs' : 'N/A'}</td>
+                    <td data-label="Próximo" class="p-3.5">${escHtml(rec.nextServiceDate || 'No aplica')}</td>
+                    <td data-label="Estado" class="p-3.5">Pendiente</td>
+                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
+                        <button onclick="markAsCompleted(${rec.id})" class="bg-teal-500 text-white p-1 rounded-lg"><i data-lucide="check" class="w-4 h-4"></i></button>
+                        <button onclick="editRecord(${rec.id})" class="bg-amber-500 text-white p-1 rounded-lg"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="deleteRecord(${rec.id})" class="text-rose-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+            });
+            lucide.createIcons();
         }
 
         const COMPANY = {
@@ -1183,11 +1407,6 @@
             applyLogo(null);
         }
 
-        function downloadHistoryNote() {
-            alert("Función de descarga PNG lista.");
-        }
-
-        // Descarga segura del respaldo completo directo desde la ruta /api/backup
         async function downloadFullDatabaseBackup() {
             try {
                 const res = await fetch('/api/backup');
@@ -1207,8 +1426,6 @@
                 alert("No se pudo obtener el respaldo completo de la base de datos.");
             }
         }
-
-        function checkAlerts() {}
 
         window.onload = () => {
             if (sessionStorage.getItem('profiltros_logged') === 'true') {
