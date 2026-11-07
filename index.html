@@ -183,7 +183,6 @@
                         <i data-lucide="cloud" class="w-4 h-4 text-cyan-200"></i><span>Guardado automático</span>
                     </div>
 
-                    <!-- Botón para descargar database.json completo -->
                     <button onclick="downloadFullDatabaseBackup()" class="shrink-0 bg-emerald-600/90 hover:bg-emerald-700 text-white p-2.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold border border-emerald-300/30 shadow-md" title="Descargar database.json completo">
                         <i data-lucide="database" class="w-4 h-4"></i> <span class="hidden sm:inline">database.json</span>
                     </button>
@@ -274,7 +273,7 @@
                             <input type="text" id="reg-client-phone" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ej: 04121234567">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Correo Electrónico (Para recordatorios)</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Correo Electrónico (Opcional)</label>
                             <input type="email" id="reg-client-email" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="cliente@correo.com">
                         </div>
                         <div>
@@ -320,7 +319,7 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN: CLIENTES POR COBRAR -->
+            <!-- SECCIÓN: CLIENTES POR COBRAR -->
             <div id="sec-cobrar" class="section-block hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- Formulario de Deuda -->
@@ -337,8 +336,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Correo Electrónico (Notificaciones)</label>
-                                <input type="email" id="recv-email" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none" placeholder="correo@cliente.com">
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Teléfono / WhatsApp</label>
+                                <input type="text" id="recv-phone" required class="w-full bg-white/80 border border-amber-200 rounded-xl p-2.5 text-sm outline-none" placeholder="04121234567">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">¿De qué es la deuda? (Concepto)</label>
@@ -381,7 +380,7 @@
                             <table class="responsive-table w-full text-left border-collapse text-sm">
                                 <thead>
                                     <tr class="bg-amber-100/40 text-amber-900 font-semibold border-b border-amber-200/60">
-                                        <th class="p-3.5">Cliente / Correo</th>
+                                        <th class="p-3.5">Cliente / Teléfono</th>
                                         <th class="p-3.5">Concepto</th>
                                         <th class="p-3.5">Monto ($)</th>
                                         <th class="p-3.5">Fecha Pago</th>
@@ -857,6 +856,7 @@
                 currentBcvRate = data.promedio;
                 document.getElementById('bcv-rate').innerText = `${currentBcvRate.toFixed(2)} Bs/$`;
                 toggleBcvInput();
+                renderReceivablesTable();
             } catch (e) {
                 document.getElementById('bcv-rate').innerText = "No disponible";
             }
@@ -996,12 +996,12 @@
             });
         }
 
-        // LÓGICA DE CUENTAS POR COBRAR (RECEIVABLES)
+        // LÓGICA DE CUENTAS POR COBRAR (RECEIVABLES) CON WHATSAPP
         function renderReceivablesSelectAndTable() {
             const select = document.getElementById('recv-client');
             select.innerHTML = `<option value="">Seleccione un cliente...</option>`;
             clients.forEach(c => {
-                select.innerHTML += `<option value="${c.id}" data-email="${c.email || ''}">${escHtml(c.name)}</option>`;
+                select.innerHTML += `<option value="${c.id}" data-phone="${c.phone || ''}">${escHtml(c.name)}</option>`;
             });
             renderReceivablesTable();
         }
@@ -1009,15 +1009,15 @@
         function onReceivableClientChange() {
             const select = document.getElementById('recv-client');
             const opt = select.options[select.selectedIndex];
-            const email = opt.getAttribute('data-email') || '';
-            document.getElementById('recv-email').value = email;
+            const phone = opt.getAttribute('data-phone') || '';
+            document.getElementById('recv-phone').value = phone;
         }
 
         function suggestReminderDate() {
             const dueDateVal = document.getElementById('recv-due-date').value;
             if (!dueDateVal) return;
             const due = new Date(dueDateVal);
-            due.setDate(due.getDate() - 1); // Sugerir 1 día antes
+            due.setDate(due.getDate() - 1);
             document.getElementById('recv-reminder-date').value = due.toISOString().split('T')[0];
         }
 
@@ -1032,7 +1032,7 @@
                 id: editId ? Number(editId) : Date.now(),
                 clientId: client.id,
                 clientName: client.name,
-                email: document.getElementById('recv-email').value,
+                phone: document.getElementById('recv-phone').value,
                 concept: document.getElementById('recv-concept').value,
                 amountUsd: parseFloat(document.getElementById('recv-amount').value) || 0,
                 dueDate: document.getElementById('recv-due-date').value,
@@ -1043,7 +1043,7 @@
             if (editId) {
                 const idx = receivables.findIndex(r => r.id == editId);
                 if (idx !== -1) {
-                    recv.status = receivables[idx].status; // conservar estado anterior
+                    recv.status = receivables[idx].status;
                     receivables[idx] = recv;
                 }
             } else {
@@ -1067,7 +1067,7 @@
             if (!r) return;
             document.getElementById('edit-receivable-id').value = r.id;
             document.getElementById('recv-client').value = r.clientId;
-            document.getElementById('recv-email').value = r.email || '';
+            document.getElementById('recv-phone').value = r.phone || '';
             document.getElementById('recv-concept').value = r.concept;
             document.getElementById('recv-amount').value = r.amountUsd;
             document.getElementById('recv-due-date').value = r.dueDate;
@@ -1094,46 +1094,45 @@
             }
         }
 
-        async function sendEmailReminder(id) {
+        function sendWhatsAppReminder(id) {
             const r = receivables.find(x => x.id == id);
             if (!r) return;
-            if (!r.email) {
-                alert("Este cliente no tiene un correo electrónico configurado.");
+
+            let phone = (r.phone || '').replace(/\D/g, '');
+            if (!phone) {
+                alert("El cliente no tiene un número de teléfono registrado.");
                 return;
             }
-            if (!confirm(`¿Enviar aviso de cobro por correo a ${r.email}?`)) return;
 
-            try {
-                const res = await fetch('/api/receivables/send-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + authToken
-                    },
-                    body: JSON.stringify({
-                        to: r.email,
-                        clientName: r.clientName,
-                        concept: r.concept,
-                        amountUsd: r.amountUsd,
-                        dueDate: r.dueDate,
-                        companyName: COMPANY.name
-                    })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    alert(data.message || "Aviso enviado correctamente.");
-                } else {
-                    alert(data.error || "Error al enviar el correo.");
-                }
-            } catch (err) {
-                alert("Error de conexión al enviar el correo.");
+            // Formatear número para Venezuela si no incluye código de país
+            if (phone.startsWith('0')) {
+                phone = '58' + phone.substring(1);
+            } else if (!phone.startsWith('58')) {
+                phone = '58' + phone;
             }
+
+            const rate = currentBcvRate || 1;
+            const amountBs = (r.amountUsd * rate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const textMsg = `Estimado/a ${r.clientName},\n\n` +
+                `Es un gusto saludarle de parte de ${COMPANY.name}.\n\n` +
+                `Le escribimos muy cordialmente para recordarle su saldo pendiente por el concepto de *"${r.concept}"* ` +
+                `por un monto de *$${Number(r.amountUsd).toFixed(2)} USD*, equivalente a *${amountBs} Bs* (calculado según la tasa BCV del día).\n\n` +
+                `📌 *Datos de Pago Móvil / Transferencia:*\n` +
+                `• Banco: Banesco (0134)\n` +
+                `• Teléfono: 0412-9420724\n` +
+                `• C.I. / RIF: 28.221.359\n\n` +
+                `⚠️ *Nota importante:* En caso de no realizar la cancelación en un lapso de 24 horas, el monto final en Bolívares puede variar de acuerdo a la tasa oficial BCV del día en que se efectúe el pago.\n\n` +
+                `Agradecemos enormemente su atención y quedamos a su entera disposición. ¡Que tenga un feliz día!`;
+
+            const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(textMsg)}`;
+            window.open(url, '_blank');
         }
 
         function renderReceivablesTable() {
             const tbody = document.getElementById('receivables-table');
             const q = (document.getElementById('recv-search').value || '').toLowerCase();
-            const list = receivables.filter(r => [r.clientName, r.concept, r.email].some(v => String(v || '').toLowerCase().includes(q)));
+            const list = receivables.filter(r => [r.clientName, r.concept, r.phone].some(v => String(v || '').toLowerCase().includes(q)));
             
             const pendingTotal = receivables.filter(r => r.status === 'pendiente').reduce((acc, r) => acc + (r.amountUsd || 0), 0);
             document.getElementById('total-receivable-amount').textContent = `$${pendingTotal.toFixed(2)}`;
@@ -1142,14 +1141,14 @@
             list.forEach(r => {
                 const isPaid = r.status === 'pagado';
                 tbody.innerHTML += `<tr class="hover:bg-amber-50/40 ${isPaid ? 'opacity-60 bg-slate-50/50' : ''}">
-                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(r.clientName)}<br><span class="text-xs font-normal text-slate-500">${escHtml(r.email || 'Sin correo')}</span></td>
+                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(r.clientName)}<br><span class="text-xs font-normal text-slate-500">${escHtml(r.phone || 'Sin teléfono')}</span></td>
                     <td data-label="Concepto" class="p-3.5">${escHtml(r.concept)}</td>
                     <td data-label="Monto" class="p-3.5 font-bold text-amber-700">$${Number(r.amountUsd).toFixed(2)}</td>
                     <td data-label="Fecha Pago" class="p-3.5">${escHtml(r.dueDate)}</td>
                     <td data-label="Aviso" class="p-3.5">${escHtml(r.reminderDate || 'N/A')}</td>
                     <td data-label="Estado" class="p-3.5"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${isPaid ? 'Pagado' : 'Pendiente'}</span></td>
                     <td data-label="Acciones" class="td-actions p-3.5 flex gap-1.5 justify-end">
-                        <button onclick="sendEmailReminder(${r.id})" class="bg-blue-600 text-white p-1.5 rounded-lg text-xs flex items-center gap-1" title="Enviar aviso por correo"><i data-lucide="mail" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="sendWhatsAppReminder(${r.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold" title="Enviar cobro por WhatsApp"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> WhatsApp</button>
                         ${!isPaid ? `<button onclick="markReceivablePaid(${r.id})" class="bg-emerald-600 text-white p-1.5 rounded-lg text-xs" title="Marcar como pagado"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>` : ''}
                         <button onclick="editReceivable(${r.id})" class="bg-amber-500 text-white p-1.5 rounded-lg text-xs"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
                         <button onclick="deleteReceivable(${r.id})" class="text-rose-600 p-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
