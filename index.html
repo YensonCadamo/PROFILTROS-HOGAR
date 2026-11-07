@@ -9,6 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- HTML2Canvas para generación de imagen PNG del recibo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { 
@@ -646,6 +648,64 @@
         </form>
     </div>
 
+    <!-- ELEMENTO OCULTO PARA LA GENERACIÓN DEL RECIBO PNG PROFESIONAL -->
+    <div id="receipt-container" style="position: absolute; left: -9999px; top: -9999px; width: 650px; background: #ffffff; padding: 35px; border-radius: 16px; font-family: 'Plus Jakarta Sans', sans-serif; color: #1e293b; border: 2px solid #0891b2;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px;">
+            <div>
+                <h1 style="font-size: 24px; font-weight: 800; color: #0891b2; margin: 0;" id="rc-company-name">Profiltros Hogar, C.A.</h1>
+                <p style="font-size: 12px; color: #64748b; margin: 3px 0 0 0;" id="rc-company-rif">RIF: J-50150423-7</p>
+                <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;" id="rc-company-address">Calle 23 de Enero, Local S/N, Sector La Aduana, Barcelona</p>
+                <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;" id="rc-company-phone">Tel: 0412-698.81.15</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="display: inline-block; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-size: 12px; font-weight: 800; padding: 4px 12px; rounded-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em;">COMPROBANTE DE PAGO</span>
+                <p style="font-size: 12px; font-weight: 700; color: #334155; margin: 8px 0 0 0;">N° RECIBO: <span id="rc-num" style="color: #0891b2;">0001</span></p>
+                <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;">Fecha: <span id="rc-date">--/--/----</span></p>
+            </div>
+        </div>
+
+        <div style="margin-top: 25px; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #f1f5f9;">
+            <p style="font-size: 11px; font-weight: 700; color: #0891b2; text-transform: uppercase; margin: 0 0 5px 0;">Recibido de:</p>
+            <p style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;" id="rc-client-name">Nombre del Cliente</p>
+            <p style="font-size: 12px; color: #475569; margin: 3px 0 0 0;" id="rc-client-phone">Teléfono: --</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                <thead>
+                    <tr style="background: #0891b2; color: #ffffff; text-align: left;">
+                        <th style="padding: 10px 12px; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">Concepto / Descripción</th>
+                        <th style="padding: 10px 12px; text-align: right; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">Monto USD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 14px 12px; font-weight: 600; color: #334155;" id="rc-concept">Descripción del servicio</td>
+                        <td style="padding: 14px 12px; text-align: right; font-weight: 700; color: #0f172a;" id="rc-amount-usd">$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="border: 2px dashed #10b981; color: #10b981; font-weight: 900; font-size: 20px; padding: 8px 16px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.1em; transform: rotate(-4deg);">
+                ✓ PAGADO
+            </div>
+            <div style="text-align: right; background: #ecfeff; padding: 15px 20px; border-radius: 12px; border: 1px solid #cff4fc; min-width: 240px;">
+                <p style="font-size: 11px; color: #0891b2; font-weight: 600; margin: 0;">Tasa BCV Aplicada: <span id="rc-bcv-rate" style="font-weight: 700;">0.00</span> Bs/$</p>
+                <div style="margin-top: 6px; border-top: 1px border #bae6fd; padding-top: 6px;">
+                    <span style="font-size: 12px; font-weight: 700; color: #0f172a;">TOTAL CANCELADO:</span><br>
+                    <span style="font-size: 22px; font-weight: 800; color: #059669;" id="rc-total-bs">0,00 Bs</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 15px; text-align: center; font-size: 11px; color: #94a3b8;">
+            <p style="margin: 0; font-weight: 600;">¡Gracias por su confianza y preferencia!</p>
+            <p style="margin: 2px 0 0 0;">Profiltros Hogar, C.A. · Excelencia y Calidad en Mantenimiento de Filtros</p>
+        </div>
+    </div>
+
     <script>
         let currentBcvRate = 0;
         let clients = [];
@@ -996,7 +1056,7 @@
             });
         }
 
-        // LÓGICA DE CUENTAS POR COBRAR (RECEIVABLES) CON WHATSAPP
+        // LÓGICA DE CUENTAS POR COBRAR (RECEIVABLES) CON RECIBOS Y WHATSAPP
         function renderReceivablesSelectAndTable() {
             const select = document.getElementById('recv-client');
             select.innerHTML = `<option value="">Seleccione un cliente...</option>`;
@@ -1064,7 +1124,7 @@
 
         function editReceivable(id) {
             const r = receivables.find(x => x.id == id);
-            if (!r) return;
+            if (!r || r.status === 'pagado') return;
             document.getElementById('edit-receivable-id').value = r.id;
             document.getElementById('recv-client').value = r.clientId;
             document.getElementById('recv-phone').value = r.phone || '';
@@ -1081,6 +1141,8 @@
             if (!r) return;
             if (confirm(`¿Marcar la deuda de "${r.clientName}" como pagada?`)) {
                 r.status = 'pagado';
+                r.paidBcvRate = currentBcvRate || 1;
+                r.paidAt = todayStr();
                 saveItem('receivables', r);
                 renderReceivablesTable();
             }
@@ -1096,7 +1158,7 @@
 
         function sendWhatsAppReminder(id) {
             const r = receivables.find(x => x.id == id);
-            if (!r) return;
+            if (!r || r.status === 'pagado') return;
 
             let phone = (r.phone || '').replace(/\D/g, '');
             if (!phone) {
@@ -1104,7 +1166,6 @@
                 return;
             }
 
-            // Formatear número para Venezuela si no incluye código de país
             if (phone.startsWith('0')) {
                 phone = '58' + phone.substring(1);
             } else if (!phone.startsWith('58')) {
@@ -1129,6 +1190,40 @@
             window.open(url, '_blank');
         }
 
+        // GENERACIÓN DE RECIBO DE PAGO EN FORMATO PNG
+        function downloadReceiptPNG(id) {
+            const r = receivables.find(x => x.id == id);
+            if (!r) return;
+
+            const rate = r.paidBcvRate || currentBcvRate || 1;
+            const amountBs = (r.amountUsd * rate).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            document.getElementById('rc-company-name').textContent = COMPANY.name;
+            document.getElementById('rc-company-rif').textContent = 'RIF: ' + COMPANY.rif;
+            document.getElementById('rc-company-address').textContent = COMPANY.address;
+            document.getElementById('rc-company-phone').textContent = 'Tel: ' + COMPANY.phone;
+
+            document.getElementById('rc-num').textContent = String(r.id).slice(-5);
+            document.getElementById('rc-date').textContent = r.paidAt || todayStr();
+            document.getElementById('rc-client-name').textContent = r.clientName;
+            document.getElementById('rc-client-phone').textContent = 'Teléfono: ' + (r.phone || 'N/A');
+            document.getElementById('rc-concept').textContent = r.concept;
+            document.getElementById('rc-amount-usd').textContent = '$' + Number(r.amountUsd).toFixed(2);
+            document.getElementById('rc-bcv-rate').textContent = rate.toFixed(2);
+            document.getElementById('rc-total-bs').textContent = amountBs + ' Bs';
+
+            const container = document.getElementById('receipt-container');
+            
+            html2canvas(container, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `Recibo_Pago_${r.clientName.replace(/\s+/g, '_')}_${r.id}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alert('No se pudo generar la imagen del recibo.');
+            });
+        }
+
         function renderReceivablesTable() {
             const tbody = document.getElementById('receivables-table');
             const q = (document.getElementById('recv-search').value || '').toLowerCase();
@@ -1140,7 +1235,7 @@
             tbody.innerHTML = list.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-slate-400">No hay cuentas por cobrar registradas.</td></tr>` : '';
             list.forEach(r => {
                 const isPaid = r.status === 'pagado';
-                tbody.innerHTML += `<tr class="hover:bg-amber-50/40 ${isPaid ? 'opacity-60 bg-slate-50/50' : ''}">
+                tbody.innerHTML += `<tr class="hover:bg-amber-50/40 ${isPaid ? 'opacity-70 bg-slate-50/50' : ''}">
                     <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(r.clientName)}<br><span class="text-xs font-normal text-slate-500">${escHtml(r.phone || 'Sin teléfono')}</span></td>
                     <td data-label="Concepto" class="p-3.5">${escHtml(r.concept)}</td>
                     <td data-label="Monto" class="p-3.5 font-bold text-amber-700">$${Number(r.amountUsd).toFixed(2)}</td>
@@ -1148,9 +1243,15 @@
                     <td data-label="Aviso" class="p-3.5">${escHtml(r.reminderDate || 'N/A')}</td>
                     <td data-label="Estado" class="p-3.5"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${isPaid ? 'Pagado' : 'Pendiente'}</span></td>
                     <td data-label="Acciones" class="td-actions p-3.5 flex gap-1.5 justify-end">
-                        <button onclick="sendWhatsAppReminder(${r.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold" title="Enviar cobro por WhatsApp"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> WhatsApp</button>
-                        ${!isPaid ? `<button onclick="markReceivablePaid(${r.id})" class="bg-emerald-600 text-white p-1.5 rounded-lg text-xs" title="Marcar como pagado"><i data-lucide="check" class="w-3.5 h-3.5"></i></button>` : ''}
-                        <button onclick="editReceivable(${r.id})" class="bg-amber-500 text-white p-1.5 rounded-lg text-xs"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
+                        ${!isPaid ? `
+                            <button onclick="sendWhatsAppReminder(${r.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold shadow-sm" title="Enviar cobro por WhatsApp"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> WhatsApp</button>
+                            <button onclick="markReceivablePaid(${r.id})" class="bg-emerald-600 text-white p-1.5 rounded-lg text-xs font-semibold flex items-center gap-1" title="Marcar como pagado"><i data-lucide="check" class="w-3.5 h-3.5"></i> Pagado</button>
+                            <button onclick="editReceivable(${r.id})" class="bg-amber-500 text-white p-1.5 rounded-lg text-xs"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
+                        ` : `
+                            <button disabled class="bg-slate-300 text-slate-500 p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold cursor-not-allowed opacity-50"><i data-lucide="message-square" class="w-3.5 h-3.5"></i> WhatsApp</button>
+                            <button onclick="downloadReceiptPNG(${r.id})" class="bg-cyan-600 hover:bg-cyan-700 text-white p-1.5 rounded-lg text-xs flex items-center gap-1 font-semibold shadow-sm" title="Descargar Recibo en PNG"><i data-lucide="file-image" class="w-3.5 h-3.5"></i> Recibo PNG</button>
+                            <button disabled class="bg-slate-200 text-slate-400 p-1.5 rounded-lg text-xs cursor-not-allowed"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
+                        `}
                         <button onclick="deleteReceivable(${r.id})" class="text-rose-600 p-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </td>
                 </tr>`;
