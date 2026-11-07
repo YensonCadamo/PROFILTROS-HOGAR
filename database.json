@@ -1,0 +1,30 @@
+{
+  "master": "admin",
+  "users": [
+    {
+      "username": "elias",
+      "password": "123"
+    }
+  ],
+  "clients": [
+    {
+      "id": 1794015833910,
+      "name": "Yensan Cadamo",
+      "location": "Lecherias",
+      "phone": "04129420724",
+      "registeredAt": "2026-11-06"
+    }
+  ],
+  "records": [],
+  "company": {
+    "name": "Profiltros Hogar, C.A.",
+    "rif": "J-50150423-7",
+    "phone": "0412-698.81.15",
+    "address": "Calle 23 de Enero, Local S/N, Sector La Aduana, Barcelona, Estado Anzoátegui",
+    "email": "profiltroshogar@gmail.com",
+    "instagram": "Profiltroshogar.c.a",
+    "facebook": "profiltrohoga Ca"
+  },
+  "logoDataUrl": null,
+  "logoVersion": 0
+}

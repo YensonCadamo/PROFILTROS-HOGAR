@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profiltros Hogar, C.A. - Sistema de Mantenimientos</title>
+    <link id="favicon" rel="icon" href="/api/logo">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: linear-gradient(135deg, #e0f7fa 0%, #e0f2fe 50%, #ccfbf1 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(186, 230, 253, 0.6);
+        }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        @media (max-width: 767px) {
+            input, select, textarea { font-size: 16px !important; }
+            .responsive-table thead { display: none; }
+            .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; }
+            .responsive-table tbody { padding: 0.5rem; }
+            .responsive-table tbody > tr {
+                background: rgba(255, 255, 255, 0.85);
+                border: 1px solid rgba(165, 243, 252, 0.9);
+                border-radius: 1rem;
+                margin-bottom: 0.75rem;
+                padding: 0.25rem 0.75rem;
+                box-shadow: 0 1px 3px rgba(8, 145, 178, 0.08);
+            }
+            .responsive-table.divide-y > :not([hidden]) ~ :not([hidden]) { border-top-width: 0; }
+            .responsive-table td {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 0.55rem 0 !important;
+                text-align: right;
+                border-bottom: 1px dashed rgba(165, 243, 252, 0.9);
+                word-break: break-word;
+            }
+            .responsive-table td:last-child { border-bottom: 0; }
+            .responsive-table td > * { min-width: 0; }
+            .responsive-table td[data-label]::before {
+                content: attr(data-label);
+                flex-shrink: 0;
+                max-width: 42%;
+                text-align: left;
+                font-size: 0.7rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                color: #0e7490;
+                padding-top: 0.1rem;
+            }
+            .responsive-table td.td-main { font-size: 1rem; }
+            .responsive-table td.td-actions { justify-content: flex-end; flex-wrap: wrap; padding-top: 0.75rem !important; }
+            .responsive-table td.td-actions::before { margin-right: auto; align-self: center; }
+            .responsive-table td.td-actions button { padding: 0.55rem; }
+            .responsive-table td.td-obs { flex-direction: column; text-align: left; }
+            .responsive-table td.td-obs::before { max-width: none; }
+            .responsive-table td[colspan] { display: block !important; text-align: center; border: 0; }
+            .responsive-table tbody > tr:has(td[colspan]) { background: transparent; border: 0; box-shadow: none; }
+        }
+        .glass-header {
+            background: rgba(8, 145, 178, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Pantalla de Login -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-cyan-900 via-teal-900 to-sky-950 absolute inset-0 z-50">
+        <div class="glass-panel p-8 rounded-3xl shadow-2xl w-full max-w-md border border-cyan-300/30">
+            <div class="text-center mb-8">
+                <img id="login-logo" alt="Logo de la empresa" class="hidden mx-auto mb-3 max-h-28 max-w-[220px] object-contain drop-shadow-md">
+                <div id="login-logo-fallback" class="inline-flex p-4 bg-cyan-100/80 rounded-2xl text-cyan-700 mb-3 shadow-inner">
+                    <i data-lucide="droplets" class="w-10 h-10"></i>
+                </div>
+                <h1 id="login-company-name" class="text-2xl font-bold text-slate-800 tracking-tight">Profiltros Hogar, C.A.</h1>
+                <p id="login-subtitle" class="text-slate-500 text-sm mt-1">Ingresa tus credenciales para acceder</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1 p-1 mb-6 bg-cyan-50/80 border border-cyan-200 rounded-xl text-sm font-semibold">
+                <button type="button" id="tab-btn-users" onclick="switchLoginTab('users')" class="login-tab py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i> Crear Usuario
+                </button>
+                <button type="button" id="tab-btn-login" onclick="switchLoginTab('login')" class="login-tab py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Iniciar Sesión
+                </button>
+            </div>
+
+            <div id="users-panel" class="hidden space-y-4">
+                <form id="create-user-form" class="space-y-3 p-4 bg-white/60 border border-cyan-100 rounded-2xl">
+                    <p class="text-sm font-bold text-slate-700 flex items-center gap-1.5"><i data-lucide="user-plus" class="w-4 h-4 text-cyan-600"></i> Nuevo usuario</p>
+                    <input type="text" id="new-username" autocomplete="off" required class="w-full px-4 py-2.5 bg-white/80 border border-cyan-200 rounded-xl outline-none" placeholder="Nombre de usuario">
+                    <input type="password" id="new-password" autocomplete="new-password" required class="w-full px-4 py-2.5 bg-white/80 border border-cyan-200 rounded-xl outline-none" placeholder="Contraseña">
+                    <input type="password" id="new-password2" autocomplete="new-password" required class="w-full px-4 py-2.5 bg-white/80 border border-cyan-200 rounded-xl outline-none" placeholder="Repite la contraseña">
+                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold py-2.5 rounded-xl shadow-lg flex items-center justify-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i> Crear Usuario
+                    </button>
+                </form>
+
+                <div class="p-4 bg-white/60 border border-cyan-100 rounded-2xl">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <p class="text-sm font-bold text-slate-700 flex items-center gap-1.5"><i data-lucide="users" class="w-4 h-4 text-cyan-600"></i> Usuarios</p>
+                        <button type="button" onclick="loadAccounts()" class="text-xs font-semibold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2.5 py-1 rounded-lg flex items-center gap-1">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Ver usuarios
+                        </button>
+                    </div>
+                    <ul id="accounts-list" class="space-y-1.5 text-sm">
+                        <li class="text-xs text-slate-500">Pulsa "Ver usuarios" para ver la lista.</li>
+                    </ul>
+                </div>
+
+                <div id="users-msg" class="hidden text-xs text-center font-semibold p-2.5 rounded-xl border"></div>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Usuario</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="w-5 h-5 absolute left-3 top-2.5 text-cyan-600"></i>
+                        <input type="text" id="username" autocomplete="username" required class="w-full pl-10 pr-4 py-2.5 bg-white/80 border border-cyan-200 rounded-xl outline-none" placeholder="Nombre de usuario">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="w-5 h-5 absolute left-3 top-2.5 text-cyan-600"></i>
+                        <input type="password" id="password" autocomplete="current-password" required class="w-full pl-10 pr-4 py-2.5 bg-white/80 border border-cyan-200 rounded-xl outline-none" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden text-red-600 text-xs text-center font-semibold bg-red-50/80 p-2.5 rounded-xl border border-red-200">
+                    Usuario o contraseña incorrectos.
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Panel Principal -->
+    <div id="main-panel" class="hidden min-h-screen flex flex-col justify-between">
+        <header class="glass-header text-white shadow-lg p-3 md:p-4 sticky top-0 z-40 border-b border-cyan-300/30">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <button id="btn-back-menu" onclick="showMainMenu()" class="hidden bg-white/20 hover:bg-white/30 text-white p-2 rounded-xl transition flex items-center gap-1 text-sm font-semibold border border-white/20">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Menú
+                    </button>
+                    <div>
+                        <h1 class="text-lg md:text-2xl font-bold flex items-center gap-2 tracking-tight leading-tight">
+                            <span id="header-logo-wrap" class="hidden shrink-0 bg-white rounded-lg p-1 shadow-sm"><img id="header-logo" alt="Logo" class="h-7 md:h-9 max-w-[90px] object-contain"></span>
+                            <i id="header-logo-fallback" data-lucide="droplets" class="text-cyan-200"></i> <span id="header-company-name">Profiltros Hogar, C.A.</span>
+                        </h1>
+                        <p class="hidden sm:block text-cyan-100 text-xs md:text-sm">Control de Mantenimientos y Clientes</p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto justify-end">
+                    <div class="bg-cyan-950/40 border border-cyan-300/40 rounded-xl px-2.5 py-1.5 md:p-2.5 text-left md:text-right flex items-center gap-2 md:gap-3 backdrop-blur-md flex-1 md:flex-none min-w-0">
+                        <i data-lucide="badge-dollar-sign" class="text-emerald-300 w-5 h-5 md:w-6 md:h-6"></i>
+                        <div>
+                            <span class="block text-[10px] text-cyan-200 uppercase tracking-wider font-semibold">Tasa BCV del Día</span>
+                            <span id="bcv-rate" class="text-sm md:text-lg font-bold text-white whitespace-nowrap">Cargando...</span>
+                        </div>
+                    </div>
+
+                    <div id="sync-status" class="flex items-center gap-2 text-xs font-semibold text-cyan-50 bg-cyan-950/40 border border-cyan-300/40 rounded-xl px-2.5 md:px-3 py-2.5 shrink-0 [&>span]:hidden sm:[&>span]:inline">
+                        <i data-lucide="cloud" class="w-4 h-4 text-cyan-200"></i><span>Guardado automático</span>
+                    </div>
+
+                    <!-- Botón para descargar database.json completo -->
+                    <button onclick="downloadFullDatabaseBackup()" class="shrink-0 bg-emerald-600/90 hover:bg-emerald-700 text-white p-2.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold border border-emerald-300/30 shadow-md" title="Descargar database.json con absolutamente todo">
+                        <i data-lucide="database" class="w-4 h-4"></i> <span class="hidden sm:inline">database.json</span>
+                    </button>
+
+                    <button onclick="openCompanyModal()" class="shrink-0 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold border border-white/20 shadow-md" title="Editar datos de la empresa">
+                        <i data-lucide="building-2" class="w-4 h-4"></i> <span class="hidden sm:inline">Empresa</span>
+                    </button>
+
+                    <button onclick="logout()" class="shrink-0 bg-rose-500/80 hover:bg-rose-600 text-white p-2.5 rounded-xl transition flex items-center gap-2 text-sm font-semibold border border-rose-300/30 shadow-md" title="Cerrar Sesión">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden sm:inline">Salir</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MENÚ PRINCIPAL -->
+        <main id="menu-view" class="flex-1 flex items-center justify-center p-4">
+            <div class="max-w-5xl w-full text-center">
+                <h2 class="text-xl md:text-3xl font-bold text-slate-800 mb-1 md:mb-2">Bienvenido, Elias</h2>
+                <p class="text-slate-600 mb-5 md:mb-8 text-sm md:text-base font-medium">Selecciona la opción que deseas realizar</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
+                    <button onclick="openSection('sec-clientes')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
+                        <div class="p-4 bg-cyan-100/80 group-hover:bg-cyan-500 text-cyan-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="user-plus" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-cyan-700">Agregar Clientes</span>
+                    </button>
+
+                    <button onclick="openSection('sec-mantenimiento')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
+                        <div class="p-4 bg-teal-100/80 group-hover:bg-teal-500 text-teal-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="wrench" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-teal-700">Agendar Mantenimiento</span>
+                    </button>
+
+                    <button onclick="openSection('sec-proximos')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
+                        <div class="p-4 bg-sky-100/80 group-hover:bg-sky-500 text-sky-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="clock" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-sky-700">Consultar Próximo Mantenimiento</span>
+                    </button>
+
+                    <button onclick="openSection('sec-realizados')" class="glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
+                        <div class="p-4 bg-emerald-100/80 group-hover:bg-emerald-500 text-emerald-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="check-circle-2" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-emerald-700">Trabajos Realizados</span>
+                    </button>
+
+                    <button onclick="openSection('sec-lista-clientes')" class="col-span-2 md:col-span-1 glass-panel hover:bg-white/90 rounded-3xl p-4 md:p-6 shadow-xl transition group flex flex-col items-center justify-center gap-3 md:gap-4 border border-cyan-200">
+                        <div class="p-4 bg-indigo-100/80 group-hover:bg-indigo-500 text-indigo-600 group-hover:text-white rounded-2xl transition shadow-inner">
+                            <i data-lucide="book-user" class="w-8 h-8 md:w-10 md:h-10"></i>
+                        </div>
+                        <span class="text-sm md:text-base font-bold text-slate-800 group-hover:text-indigo-700">Lista de Clientes</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- SECCIONES DE TRABAJO -->
+        <div id="content-view" class="hidden flex-1 container mx-auto p-3 md:p-6 space-y-6">
+
+            <!-- SECCIÓN 1: AGREGAR CLIENTES -->
+            <div id="sec-clientes" class="section-block hidden space-y-6">
+                <div class="glass-panel rounded-3xl shadow-xl p-4 md:p-6 max-w-2xl mx-auto">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-cyan-900">
+                        <i data-lucide="user-plus" class="text-cyan-600"></i> Registrar Nuevo Cliente
+                    </h2>
+                    <form id="client-form" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Nombre y Apellido del Cliente</label>
+                            <input type="text" id="reg-client-name" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ej: Pedro Pérez">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Ubicación / Dirección</label>
+                            <input type="text" id="reg-client-location" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ej: Av. Principal, Lechería">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Teléfono / WhatsApp</label>
+                            <input type="text" id="reg-client-phone" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ej: 04121234567">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Fecha de Registro</label>
+                            <input type="date" id="reg-client-date" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2">
+                            <i data-lucide="save"></i> Guardar Cliente
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: LISTA DE CLIENTES -->
+            <div id="sec-lista-clientes" class="section-block hidden space-y-6">
+                <div class="glass-panel rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b border-cyan-200/60 bg-cyan-50/50 flex flex-wrap justify-between items-center gap-3">
+                        <h2 class="text-base md:text-lg font-bold text-cyan-900 flex items-center gap-2">
+                            <i data-lucide="book-user"></i> Lista de Clientes <span id="clients-count" class="text-sm font-semibold text-cyan-700"></span>
+                        </h2>
+                        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                            <input type="search" id="clients-search" oninput="renderClientsTable()" placeholder="Buscar..." class="flex-1 sm:w-72 bg-white/80 border border-cyan-200 rounded-xl p-2 text-sm outline-none">
+                            <button onclick="openSection('sec-clientes')" class="text-sm bg-cyan-600 text-white font-semibold py-2 px-3 rounded-xl shadow-sm flex items-center gap-1">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i> Nuevo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:overflow-x-auto">
+                        <table class="responsive-table w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-cyan-100/40 text-cyan-900 font-semibold border-b border-cyan-200/60">
+                                    <th class="p-3.5">Nombre</th>
+                                    <th class="p-3.5">Ubicación</th>
+                                    <th class="p-3.5">Teléfono</th>
+                                    <th class="p-3.5">Cliente Desde</th>
+                                    <th class="p-3.5 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clients-table" class="md:divide-y divide-cyan-100/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: AGENDAR MANTENIMIENTO -->
+            <div id="sec-mantenimiento" class="section-block hidden space-y-6">
+                <div class="glass-panel rounded-3xl shadow-xl p-4 md:p-6 max-w-3xl mx-auto">
+                    <h2 id="service-form-title" class="text-xl font-bold mb-4 flex items-center gap-2 text-cyan-900">
+                        <i data-lucide="wrench" class="text-cyan-600"></i> Agendar Trabajo y Mantenimiento
+                    </h2>
+                    <form id="service-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="hidden" id="edit-record-id" value="">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Seleccionar Cliente</label>
+                            <select id="service-client" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                                <option value="">Seleccione un cliente...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Trabajo Realizado / Instalación</label>
+                            <input type="text" id="work-done" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ej: Cambio de cartucho">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Fecha del Trabajo</label>
+                            <input type="date" id="service-date" onchange="handleDateChange()" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Hora</label>
+                            <input type="time" id="service-time" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-sm font-medium text-slate-700">Próximo Mantenimiento</label>
+                                <label class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 cursor-pointer select-none">
+                                    <input type="checkbox" id="next-not-applicable" onchange="toggleNextNotApplicable()" class="w-4 h-4 accent-cyan-600">
+                                    No aplica
+                                </label>
+                            </div>
+                            <input type="date" id="next-service-date" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Monto Cobrado ($ USD)</label>
+                            <input type="number" step="0.01" id="cost-usd" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="0.00">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Tipo de Cobro</label>
+                            <select id="payment-type" onchange="toggleBcvInput()" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 font-semibold outline-none">
+                                <option value="bcv">En Bolívares (Añadir Tasa BCV)</option>
+                                <option value="divisa">Solo Divisa ($ Físico / Zelle / Binance)</option>
+                            </select>
+                        </div>
+
+                        <div id="bcv-container" class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Tasa BCV Aplicada (Bs/$)</label>
+                            <input type="number" step="0.01" id="bcv-applied" class="w-full bg-cyan-100/50 border border-cyan-200 rounded-xl p-2.5 font-semibold text-cyan-900">
+                            <p id="bcv-date-info" class="text-xs text-cyan-700 mt-1 font-medium"></p>
+                        </div>
+
+                        <div class="md:col-span-2 pt-2 flex gap-3">
+                            <button type="submit" id="btn-save-service" class="flex-1 bg-gradient-to-r from-cyan-600 to-teal-500 text-white font-bold py-2.5 rounded-xl shadow-md flex items-center justify-center gap-2">
+                                <i data-lucide="save"></i> <span id="btn-save-text">Guardar Mantenimiento</span>
+                            </button>
+                            <button type="button" id="btn-cancel-edit" onclick="cancelEditing()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold py-2.5 px-5 rounded-xl">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: CONSULTAR PRÓXIMO MANTENIMIENTO -->
+            <div id="sec-proximos" class="section-block hidden space-y-6">
+                <div id="alerts-container" class="hidden glass-panel bg-amber-50/80 border border-amber-200 rounded-3xl p-4 shadow-md">
+                    <h3 class="text-amber-800 font-bold flex items-center gap-2 mb-2"><i data-lucide="bell-ring"></i> Avisos Importantes</h3>
+                    <ul id="alerts-list" class="list-disc list-inside text-amber-700 text-sm space-y-1"></ul>
+                </div>
+
+                <div class="glass-panel rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b border-cyan-200/60 bg-cyan-50/50 flex flex-wrap justify-between items-center gap-2">
+                        <h2 class="text-base md:text-lg font-bold text-cyan-900 flex items-center gap-2">
+                            <i data-lucide="list"></i> Cuenta Regresiva de Mantenimientos
+                        </h2>
+                        <button onclick="downloadFullDatabaseBackup()" class="text-xs bg-emerald-600 text-white hover:bg-emerald-700 py-1.5 px-3 rounded-xl flex items-center gap-1 font-semibold shadow-sm">
+                            <i data-lucide="database" class="w-3.5 h-3.5"></i> Descargar database.json
+                        </button>
+                    </div>
+                    <div class="md:overflow-x-auto">
+                        <table class="responsive-table w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-cyan-100/40 text-cyan-900 font-semibold border-b border-cyan-200/60">
+                                    <th class="p-3.5">Cliente</th>
+                                    <th class="p-3.5">Ubicación</th>
+                                    <th class="p-3.5">Trabajo / Hora</th>
+                                    <th class="p-3.5">Fecha</th>
+                                    <th class="p-3.5">Pago</th>
+                                    <th class="p-3.5">USD</th>
+                                    <th class="p-3.5">Total Bs</th>
+                                    <th class="p-3.5">Próximo</th>
+                                    <th class="p-3.5">Estado</th>
+                                    <th class="p-3.5 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="records-table" class="md:divide-y divide-cyan-100/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: TRABAJOS REALIZADOS -->
+            <div id="sec-realizados" class="section-block hidden space-y-6">
+                <div class="glass-panel rounded-3xl shadow-lg p-3 md:p-4 border border-cyan-200 space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                        <div class="md:col-span-5">
+                            <label class="text-[11px] font-semibold text-cyan-700 uppercase">Buscar por Cliente</label>
+                            <input type="search" id="filter-client" list="filter-client-list" oninput="renderRealizedTable()" placeholder="Nombre..." class="block w-full mt-1 border border-cyan-200 rounded-xl p-2 text-sm bg-white/85 outline-none">
+                            <datalist id="filter-client-list"></datalist>
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="text-[11px] font-semibold text-sky-700 uppercase">Periodo</label>
+                            <select id="filter-period" onchange="onPeriodChange()" class="block w-full mt-1 border border-cyan-200 rounded-xl p-2 text-sm font-semibold bg-white/85 outline-none">
+                                <option value="month">Por mes</option>
+                                <option value="week">Por semana</option>
+                                <option value="all">Todo el historial</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-4">
+                            <div id="filter-month-wrap">
+                                <label class="text-[11px] font-semibold text-sky-700 uppercase">Mes</label>
+                                <input type="month" id="filter-month" onchange="renderRealizedTable()" class="block w-full mt-1 border border-cyan-200 rounded-xl p-2 text-sm bg-white/85 outline-none">
+                            </div>
+                            <div id="filter-week-wrap" class="hidden">
+                                <label class="text-[11px] font-semibold text-sky-700 uppercase">Semana del día</label>
+                                <input type="date" id="filter-week" onchange="renderRealizedTable()" class="block w-full mt-1 border border-cyan-200 rounded-xl p-2 text-sm bg-white/85 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                    <p id="filter-summary" class="text-sm text-cyan-900 bg-cyan-50/70 border border-cyan-100 rounded-xl px-3 py-2"></p>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                    <div class="glass-panel p-3 md:p-4 rounded-3xl shadow-lg flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-semibold text-cyan-700 uppercase">Total Trabajos</span>
+                            <h3 id="stat-count" class="text-2xl font-bold text-slate-800 mt-0.5">0</h3>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-3 md:p-4 rounded-3xl shadow-lg flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-semibold text-emerald-700 uppercase">Total ($ USD)</span>
+                            <h3 id="stat-usd" class="text-xl font-bold text-emerald-600 mt-0.5">$0.00</h3>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-3 md:p-4 rounded-3xl shadow-lg flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-semibold text-blue-700 uppercase">Cobrado en BCV</span>
+                            <h3 id="stat-bcv" class="text-xl font-bold text-blue-600 mt-0.5">$0.00</h3>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-3 md:p-4 rounded-3xl shadow-lg flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-semibold text-teal-700 uppercase">Divisa Directa</span>
+                            <h3 id="stat-divisa" class="text-xl font-bold text-teal-600 mt-0.5">$0.00</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-3xl shadow-xl overflow-hidden">
+                    <div class="p-4 border-b border-cyan-200/60 bg-cyan-50/50 flex flex-wrap justify-between items-center gap-2">
+                        <h2 class="text-base md:text-lg font-bold text-cyan-900 flex items-center gap-2">
+                            <i data-lucide="check-circle-2" class="text-emerald-600"></i> Historial de Trabajos Realizados
+                        </h2>
+                        <button type="button" onclick="downloadHistoryNote()" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm py-2.5 px-4 rounded-xl shadow-md flex items-center gap-2">
+                            <i data-lucide="image-down" class="w-4 h-4"></i> Descargar Nota (PNG)
+                        </button>
+                    </div>
+                    <div class="md:overflow-x-auto">
+                        <table class="responsive-table w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-cyan-100/40 text-cyan-900 font-semibold border-b border-cyan-200/60">
+                                    <th class="p-3.5">Cliente</th>
+                                    <th class="p-3.5">Ubicación</th>
+                                    <th class="p-3.5">Trabajo</th>
+                                    <th class="p-3.5">Fecha</th>
+                                    <th class="p-3.5">Pago</th>
+                                    <th class="p-3.5">USD</th>
+                                    <th class="p-3.5">Total Bs</th>
+                                    <th class="p-3.5">Observaciones</th>
+                                    <th class="p-3.5 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="realized-table" class="md:divide-y divide-cyan-100/60"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="text-center py-4 text-xs font-semibold text-cyan-900/60">
+            <img id="footer-logo" alt="Logo" class="hidden mx-auto mb-2 h-12 max-w-[140px] object-contain">
+            <p id="footer-company-title" class="text-sm font-bold text-cyan-900/80">Profiltros Hogar, C.A. · RIF: J-50150423-7</p>
+            <p id="footer-company-address" class="mt-1">Calle 23 de Enero, Local S/N, Sector La Aduana, Barcelona, Estado Anzoátegui</p>
+            <p class="mt-1 flex flex-wrap justify-center gap-x-4 gap-y-1">
+                <a id="footer-company-phone" href="tel:+584126988115" class="hover:text-cyan-700">Tel: 0412-698.81.15</a>
+                <a id="footer-company-email" href="mailto:profiltroshogar@gmail.com" class="hover:text-cyan-700">profiltroshogar@gmail.com</a>
+                <span id="footer-company-instagram">Instagram: Profiltroshogar.c.a</span>
+                <span id="footer-company-facebook">Facebook: profiltrohoga Ca</span>
+            </p>
+            <p class="mt-2">&copy; Todos los derechos reservados</p>
+        </footer>
+    </div>
+
+    <!-- Modales -->
+    <div id="next-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-panel bg-white rounded-3xl shadow-2xl p-6 w-full max-w-md">
+            <h3 class="text-lg font-bold mb-3 text-cyan-900" id="next-modal-title">Programar Siguiente Mantenimiento</h3>
+            <input type="hidden" id="next-modal-id" value="">
+            <p id="next-modal-info" class="text-sm text-slate-600 mb-4"></p>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Fecha</label>
+            <input type="date" id="next-modal-date" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+            <div class="flex gap-3 mt-5">
+                <button type="button" onclick="saveNextMaintenance()" class="flex-1 bg-cyan-600 text-white font-bold py-2.5 rounded-xl shadow-md">Guardar</button>
+                <button type="button" onclick="closeNextMaintenanceModal()" class="bg-slate-300 text-slate-700 font-bold py-2.5 px-5 rounded-xl">Cancelar</button>
+            </div>
+            <button type="button" id="next-modal-finish" onclick="finishWithoutNext()" class="hidden w-full mt-3 text-sm font-semibold text-slate-600 hover:text-rose-600 border border-slate-200 rounded-xl py-2">Finalizar sin próximo mantenimiento</button>
+        </div>
+    </div>
+
+    <div id="client-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <form id="client-edit-form" class="glass-panel bg-white rounded-3xl shadow-2xl p-6 w-full max-w-lg">
+            <h3 class="text-lg font-bold mb-4 text-cyan-900">Editar Cliente</h3>
+            <input type="hidden" id="edit-client-id">
+            <div class="grid grid-cols-1 gap-3">
+                <input type="text" id="edit-client-name" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Nombre">
+                <input type="text" id="edit-client-location" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Ubicación">
+                <input type="text" id="edit-client-phone" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none" placeholder="Teléfono">
+                <input type="date" id="edit-client-date" required class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button type="submit" class="flex-1 bg-cyan-600 text-white font-bold py-2.5 rounded-xl shadow-md">Guardar</button>
+                <button type="button" onclick="closeClientModal()" class="bg-slate-300 text-slate-700 font-bold py-2.5 px-5 rounded-xl">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="company-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <form id="company-form" class="glass-panel bg-white rounded-3xl shadow-2xl p-6 w-full max-w-lg">
+            <h3 class="text-lg font-bold mb-1 text-cyan-900">Datos de la Empresa</h3>
+            <div class="mb-4 p-3 rounded-2xl border border-cyan-200 bg-cyan-50/60 flex items-center gap-4">
+                <div class="w-24 h-24 shrink-0 rounded-xl bg-white border border-cyan-100 flex items-center justify-center overflow-hidden">
+                    <img id="company-logo-preview" alt="Logo" class="hidden max-w-full max-h-full object-contain">
+                    <i id="company-logo-empty" data-lucide="image" class="w-8 h-8 text-cyan-300"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <label class="cursor-pointer bg-cyan-600 text-white text-xs font-bold py-2 px-3 rounded-lg flex items-center gap-1 w-max">
+                        <i data-lucide="upload" class="w-3.5 h-3.5"></i> <span id="company-logo-upload-label">Subir logo</span>
+                        <input type="file" id="company-logo-input" accept="image/*" class="hidden">
+                    </label>
+                    <button type="button" id="company-logo-remove" onclick="removeCompanyLogo()" class="hidden mt-2 bg-rose-100 text-rose-700 text-xs font-bold py-1.5 px-3 rounded-lg">Quitar</button>
+                    <p id="company-logo-status" class="text-xs mt-1 text-slate-500"></p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 gap-3">
+                <input type="text" id="company-name" placeholder="Nombre empresa" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                <input type="text" id="company-rif" placeholder="RIF" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                <input type="tel" id="company-phone" placeholder="Teléfono" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                <input type="email" id="company-email" placeholder="Correo" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                <textarea id="company-address" rows="2" placeholder="Dirección" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none"></textarea>
+                <input type="text" id="company-instagram" placeholder="Instagram" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+                <input type="text" id="company-facebook" placeholder="Facebook" class="w-full bg-white/80 border border-cyan-200 rounded-xl p-2.5 outline-none">
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button type="submit" class="flex-1 bg-cyan-600 text-white font-bold py-2.5 rounded-xl">Guardar</button>
+                <button type="button" onclick="closeCompanyModal()" class="bg-slate-300 text-slate-700 font-bold py-2.5 px-5 rounded-xl">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentBcvRate = 0;
+        let clients = [];
+        let records = [];
+        let currentRealized = [];
+        let currentRealizedMonth = '';
+        let currentRealizedKey = 'todos';
+        let authToken = sessionStorage.getItem('profiltros_auth') || '';
+
+        function setSyncStatus(state) {
+            const el = document.getElementById('sync-status');
+            if (!el) return;
+            const styles = {
+                saving: ['Guardando...', 'loader', 'text-amber-200'],
+                saved: ['Guardado en la nube', 'cloud-check', 'text-emerald-300'],
+                error: ['Sin conexión', 'cloud-off', 'text-rose-300'],
+                loading: ['Cargando...', 'loader', 'text-cyan-200']
+            };
+            const [text, icon, color] = styles[state];
+            el.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 ${color}"></i><span>${text}</span>`;
+            lucide.createIcons();
+        }
+
+        async function api(path, options = {}) {
+            const res = await fetch('/api/' + path, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + authToken,
+                    ...(options.headers || {})
+                }
+            });
+            if (res.status === 401) {
+                sessionStorage.removeItem('profiltros_auth');
+                sessionStorage.removeItem('profiltros_logged');
+                alert('Sesión expirada.');
+                location.reload();
+                throw new Error('No autorizado');
+            }
+            if (!res.ok) throw new Error('Error del servidor');
+            return res.json();
+        }
+
+        const saveQueue = [];
+        let processingQueue = false;
+
+        function enqueue(path, method, body) {
+            saveQueue.push({ path, method, body: body ? JSON.stringify(body) : undefined });
+            setSyncStatus('saving');
+            processQueue();
+        }
+
+        async function processQueue() {
+            if (processingQueue) return;
+            processingQueue = true;
+            while (saveQueue.length) {
+                const job = saveQueue[0];
+                try {
+                    await api(job.path, { method: job.method, body: job.body });
+                    saveQueue.shift();
+                } catch (err) {
+                    setSyncStatus('error');
+                    await new Promise(r => setTimeout(r, 4000));
+                }
+            }
+            processingQueue = false;
+            setSyncStatus('saved');
+        }
+
+        function saveItem(collection, item) {
+            if (!item) return;
+            enqueue(`${collection}/${item.id}`, 'PUT', item);
+        }
+
+        function deleteItem(collection, id) {
+            enqueue(`${collection}/${id}`, 'DELETE');
+        }
+
+        async function loadData(showStatus = true) {
+            if (showStatus) setSyncStatus('loading');
+            const data = await api('data');
+            clients = data.clients || [];
+            records = data.records || [];
+            if (data.company && typeof data.company === 'object') {
+                COMPANY_FIELDS.forEach(f => { if (typeof data.company[f] === 'string') COMPANY[f] = data.company[f]; });
+            }
+            renderCompany();
+            if ('logoVersion' in data && data.logoVersion !== logoVersion) {
+                applyLogo(data.logoVersion ? '/api/logo?v=' + data.logoVersion : null, data.logoVersion);
+            }
+            setSyncStatus('saved');
+        }
+
+        async function syncFromServer() {
+            if (sessionStorage.getItem('profiltros_logged') !== 'true' || saveQueue.length) return;
+            try {
+                await loadData(false);
+                refreshAll();
+            } catch (e) {}
+        }
+
+        lucide.createIcons();
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userIn = document.getElementById('username').value.trim();
+            const passIn = document.getElementById('password').value.trim();
+            const token = btoa(unescape(encodeURIComponent(userIn + ':' + passIn)));
+            fetch('/api/login', { headers: { 'Authorization': 'Basic ' + token } })
+                .then(res => {
+                    if (res.ok) {
+                        authToken = token;
+                        document.getElementById('login-error').classList.add('hidden');
+                        sessionStorage.setItem('profiltros_auth', token);
+                        sessionStorage.setItem('profiltros_logged', 'true');
+                        showPanel();
+                    } else {
+                        document.getElementById('login-error').classList.remove('hidden');
+                    }
+                })
+                .catch(() => alert('No se pudo conectar con el servidor.'));
+        });
+
+        function switchLoginTab(tab) {
+            const isUsers = tab === 'users';
+            document.getElementById('users-panel').classList.toggle('hidden', !isUsers);
+            document.getElementById('login-form').classList.toggle('hidden', isUsers);
+            document.getElementById('login-subtitle').textContent = isUsers ? 'Gestión de usuarios' : 'Ingresa tus credenciales';
+            [['users', 'tab-btn-users'], ['login', 'tab-btn-login']].forEach(([name, id]) => {
+                const el = document.getElementById(id);
+                const active = name === tab;
+                el.classList.toggle('bg-white', active);
+                el.classList.toggle('text-cyan-800', active);
+            });
+        }
+
+        function showUsersMsg(text, ok) {
+            const el = document.getElementById('users-msg');
+            el.textContent = text;
+            el.className = 'text-xs text-center font-semibold p-2.5 rounded-xl border ' + (ok ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-600 bg-red-50 border-red-200');
+        }
+
+        async function accountsRequest(action, payload = {}) {
+            const res = await fetch('/api/accounts/' + action, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || 'Error');
+            return data;
+        }
+
+        async function loadAccounts() {
+            const list = document.getElementById('accounts-list');
+            try {
+                const data = await accountsRequest('list');
+                const rows = [`<li class="flex items-center justify-between p-2 bg-cyan-50 rounded-lg"><span class="font-semibold">${data.master}</span><span class="text-xs text-cyan-700">Principal</span></li>`];
+                data.users.forEach(u => {
+                    rows.push(`<li class="flex items-center justify-between p-2 bg-white rounded-lg border"><span>${u.username}</span><button type="button" onclick="deleteAccount('${u.username}')" class="text-rose-600 text-xs">Eliminar</button></li>`);
+                });
+                list.innerHTML = rows.join('');
+            } catch (e) {
+                showUsersMsg(e.message, false);
+            }
+        }
+
+        async function deleteAccount(username) {
+            if (!confirm(`¿Eliminar usuario ${username}?`)) return;
+            await accountsRequest('delete', { username });
+            loadAccounts();
+        }
+
+        document.getElementById('create-user-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('new-username').value.trim();
+            const password = document.getElementById('new-password').value;
+            if (password !== document.getElementById('new-password2').value) {
+                showUsersMsg('Las contraseñas no coinciden.', false);
+                return;
+            }
+            try {
+                await accountsRequest('create', { username, password });
+                this.reset();
+                loadAccounts();
+                showUsersMsg(`Usuario "${username}" creado con éxito.`, true);
+            } catch (err) {
+                showUsersMsg(err.message, false);
+            }
+        });
+
+        switchLoginTab('login');
+        loadAccounts();
+
+        function logout() {
+            sessionStorage.removeItem('profiltros_logged');
+            sessionStorage.removeItem('profiltros_auth');
+            location.reload();
+        }
+
+        async function showPanel() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-panel').classList.remove('hidden');
+            fetchBCV();
+            initMonthFilter();
+            await loadData();
+            refreshAll();
+            showMainMenu();
+            setDefaultServiceDate();
+        }
+
+        async function fetchBCV() {
+            try {
+                const res = await fetch('https://ve.dolarapi.com/v1/dolares/oficial');
+                const data = await res.json();
+                currentBcvRate = data.promedio;
+                document.getElementById('bcv-rate').innerText = `${currentBcvRate.toFixed(2)} Bs/$`;
+                toggleBcvInput();
+            } catch (e) {
+                document.getElementById('bcv-rate').innerText = "No disponible";
+            }
+        }
+
+        function toggleBcvInput() {
+            const payType = document.getElementById('payment-type').value;
+            const container = document.getElementById('bcv-container');
+            const input = document.getElementById('bcv-applied');
+            if (payType === 'bcv') {
+                container.classList.remove('hidden');
+                if (!input.value) input.value = currentBcvRate.toFixed(2);
+            } else {
+                container.classList.add('hidden');
+                input.value = "0";
+            }
+        }
+
+        function initMonthFilter() {
+            const m = document.getElementById('filter-month');
+            if (m && !m.value) {
+                const now = new Date();
+                m.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            }
+        }
+
+        function setDefaultServiceDate() {
+            const today = new Date().toISOString().split('T')[0];
+            const f = document.getElementById('service-date');
+            if (f && !f.value) f.value = today;
+        }
+
+        function showMainMenu() {
+            document.getElementById('menu-view').classList.remove('hidden');
+            document.getElementById('content-view').classList.add('hidden');
+            document.getElementById('btn-back-menu').classList.add('hidden');
+            document.querySelectorAll('.section-block').forEach(el => el.classList.add('hidden'));
+        }
+
+        function openSection(secId) {
+            document.getElementById('menu-view').classList.add('hidden');
+            document.getElementById('content-view').classList.remove('hidden');
+            document.getElementById('btn-back-menu').classList.remove('hidden');
+            document.querySelectorAll('.section-block').forEach(el => el.classList.add('hidden'));
+            document.getElementById(secId).classList.remove('hidden');
+            if (secId === 'sec-mantenimiento') setDefaultServiceDate();
+            if (secId === 'sec-clientes') setDefaultClientDate();
+            if (secId === 'sec-realizados') renderRealizedTable();
+            lucide.createIcons();
+        }
+
+        document.getElementById('client-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const c = {
+                id: Date.now(),
+                name: document.getElementById('reg-client-name').value,
+                location: document.getElementById('reg-client-location').value,
+                phone: document.getElementById('reg-client-phone').value,
+                registeredAt: document.getElementById('reg-client-date').value || todayStr()
+            };
+            clients.push(c);
+            saveItem('clients', c);
+            this.reset();
+            setDefaultClientDate();
+            refreshAll();
+            alert("¡Cliente registrado!");
+        });
+
+        document.getElementById('service-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-record-id').value;
+            const clientId = document.getElementById('service-client').value;
+            const client = clients.find(c => c.id == clientId);
+            const payType = document.getElementById('payment-type').value;
+            const bcvVal = payType === 'bcv' ? parseFloat(document.getElementById('bcv-applied').value) || currentBcvRate : 0;
+
+            if (!client) return alert("Seleccione un cliente válido.");
+
+            const record = {
+                id: editId ? Number(editId) : Date.now(),
+                clientId: client.id,
+                client: client.name,
+                phone: client.phone || '',
+                location: client.location,
+                work: document.getElementById('work-done').value,
+                serviceDate: document.getElementById('service-date').value,
+                serviceTime: document.getElementById('service-time').value,
+                nextServiceDate: document.getElementById('next-not-applicable').checked ? '' : document.getElementById('next-service-date').value,
+                costUsd: parseFloat(document.getElementById('cost-usd').value),
+                paymentType: payType,
+                bcvRate: bcvVal,
+                observations: "",
+                isCompleted: false
+            };
+
+            if (editId) {
+                const idx = records.findIndex(r => r.id == editId);
+                if (idx !== -1) records[idx] = { ...records[idx], ...record };
+            } else {
+                records.push(record);
+            }
+
+            saveItem('records', record);
+            cancelEditing();
+            refreshAll();
+            openSection('sec-proximos');
+        });
+
+        function editRecord(id) {
+            const rec = records.find(r => r.id == id);
+            if (!rec) return;
+            document.getElementById('edit-record-id').value = rec.id;
+            document.getElementById('service-client').value = rec.clientId;
+            document.getElementById('work-done').value = rec.work;
+            document.getElementById('service-date').value = rec.serviceDate;
+            document.getElementById('service-time').value = rec.serviceTime || '';
+            document.getElementById('next-service-date').value = rec.nextServiceDate || '';
+            document.getElementById('next-not-applicable').checked = !rec.nextServiceDate;
+            toggleNextNotApplicable();
+            document.getElementById('cost-usd').value = rec.costUsd;
+            document.getElementById('payment-type').value = rec.paymentType || 'bcv';
+            toggleBcvInput();
+            if (rec.paymentType === 'bcv') document.getElementById('bcv-applied').value = rec.bcvRate;
+            document.getElementById('btn-save-text').innerText = "Actualizar Mantenimiento";
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            openSection('sec-mantenimiento');
+        }
+
+        function cancelEditing() {
+            document.getElementById('edit-record-id').value = "";
+            document.getElementById('service-form').reset();
+            document.getElementById('btn-save-text').innerText = "Guardar Mantenimiento";
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+            setDefaultServiceDate();
+            toggleBcvInput();
+        }
+
+        function toggleNextNotApplicable() {
+            const na = document.getElementById('next-not-applicable').checked;
+            const input = document.getElementById('next-service-date');
+            input.disabled = na;
+            input.required = !na;
+            if (na) input.value = '';
+        }
+
+        function markAsCompleted(id) {
+            const rec = records.find(r => r.id == id);
+            if (!rec) return;
+            if (confirm(`¿Marcar "${rec.work}" como realizado?`)) {
+                rec.isCompleted = true;
+                saveItem('records', rec);
+                refreshAll();
+                openSection('sec-realizados');
+            }
+        }
+
+        function refreshAll() {
+            renderClientsTable();
+            renderClientSelect();
+            renderRecordsTable();
+            renderRealizedTable();
+            checkAlerts();
+        }
+
+        function escHtml(v) {
+            return String(v ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        }
+
+        function renderClientsTable() {
+            const tbody = document.getElementById('clients-table');
+            const q = (document.getElementById('clients-search').value || '').toLowerCase();
+            const list = clients.filter(c => [c.name, c.location, c.phone].some(v => String(v || '').toLowerCase().includes(q)));
+            document.getElementById('clients-count').textContent = `(${clients.length})`;
+            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-slate-400">Sin resultados.</td></tr>` : '';
+            list.forEach(c => {
+                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
+                    <td data-label="Nombre" class="td-main p-3.5 font-semibold">${escHtml(c.name)}</td>
+                    <td data-label="Ubicación" class="p-3.5">${escHtml(c.location)}</td>
+                    <td data-label="Teléfono" class="p-3.5">${escHtml(c.phone)}</td>
+                    <td data-label="Desde" class="p-3.5">${escHtml(c.registeredAt)}</td>
+                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
+                        <button onclick="openClientModal(${c.id})" class="text-amber-600"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="deleteClient(${c.id})" class="text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+            });
+            lucide.createIcons();
+        }
+
+        function openClientModal(id) {
+            const c = clients.find(x => x.id == id);
+            if (!c) return;
+            document.getElementById('edit-client-id').value = c.id;
+            document.getElementById('edit-client-name').value = c.name;
+            document.getElementById('edit-client-location').value = c.location;
+            document.getElementById('edit-client-phone').value = c.phone;
+            document.getElementById('edit-client-date').value = c.registeredAt || '';
+            document.getElementById('client-modal').classList.remove('hidden');
+        }
+
+        function closeClientModal() { document.getElementById('client-modal').classList.add('hidden'); }
+
+        document.getElementById('client-edit-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const c = clients.find(x => x.id == document.getElementById('edit-client-id').value);
+            if (!c) return closeClientModal();
+            c.name = document.getElementById('edit-client-name').value;
+            c.location = document.getElementById('edit-client-location').value;
+            c.phone = document.getElementById('edit-client-phone').value;
+            c.registeredAt = document.getElementById('edit-client-date').value;
+            saveItem('clients', c);
+            closeClientModal();
+            refreshAll();
+        });
+
+        function deleteClient(id) {
+            if (confirm("¿Eliminar cliente?")) {
+                clients = clients.filter(c => c.id !== id);
+                deleteItem('clients', id);
+                refreshAll();
+            }
+        }
+
+        function renderClientSelect() {
+            const select = document.getElementById('service-client');
+            select.innerHTML = `<option value="">Seleccione un cliente...</option>`;
+            clients.forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${escHtml(c.name)} - (${escHtml(c.location)})</option>`;
+            });
+        }
+
+        function renderRecordsTable() {
+            const tbody = document.getElementById('records-table');
+            const pending = records.filter(r => !r.isCompleted);
+            tbody.innerHTML = pending.length === 0 ? `<tr><td colspan="10" class="p-4 text-center text-slate-400">No hay registros pendientes.</td></tr>` : '';
+            pending.forEach(rec => {
+                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
+                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(rec.client)}</td>
+                    <td data-label="Ubicación" class="p-3.5">${escHtml(rec.location)}</td>
+                    <td data-label="Trabajo" class="p-3.5">${escHtml(rec.work)}</td>
+                    <td data-label="Fecha" class="p-3.5">${escHtml(rec.serviceDate)}</td>
+                    <td data-label="Pago" class="p-3.5">${escHtml(rec.paymentType)}</td>
+                    <td data-label="USD" class="p-3.5">$${rec.costUsd.toFixed(2)}</td>
+                    <td data-label="Bs" class="p-3.5">${rec.paymentType === 'bcv' ? (rec.costUsd * rec.bcvRate).toFixed(2) + ' Bs' : 'N/A'}</td>
+                    <td data-label="Próximo" class="p-3.5">${escHtml(rec.nextServiceDate || 'No aplica')}</td>
+                    <td data-label="Estado" class="p-3.5">Pendiente</td>
+                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
+                        <button onclick="markAsCompleted(${rec.id})" class="bg-teal-500 text-white p-1 rounded-lg"><i data-lucide="check" class="w-4 h-4"></i></button>
+                        <button onclick="editRecord(${rec.id})" class="bg-amber-500 text-white p-1 rounded-lg"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="deleteRecord(${rec.id})" class="text-rose-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+            });
+            lucide.createIcons();
+        }
+
+        function deleteRecord(id) {
+            if (confirm("¿Eliminar registro?")) {
+                records = records.filter(r => r.id !== id);
+                deleteItem('records', id);
+                refreshAll();
+            }
+        }
+
+        function todayStr(d = new Date()) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function setDefaultClientDate() {
+            const f = document.getElementById('reg-client-date');
+            if (f && !f.value) f.value = todayStr();
+        }
+
+        function onPeriodChange() {
+            const mode = document.getElementById('filter-period').value;
+            document.getElementById('filter-month-wrap').classList.toggle('hidden', mode !== 'month');
+            document.getElementById('filter-week-wrap').classList.toggle('hidden', mode !== 'week');
+            renderRealizedTable();
+        }
+
+        function renderRealizedTable() {
+            const tbody = document.getElementById('realized-table');
+            const month = document.getElementById('filter-month').value;
+            const mode = document.getElementById('filter-period').value;
+            const clientQuery = (document.getElementById('filter-client').value || '').toLowerCase();
+
+            let list = records.filter(r => r.isCompleted);
+            if (mode === 'month' && month) {
+                list = list.filter(r => r.serviceDate && r.serviceDate.startsWith(month));
+            }
+            if (clientQuery) {
+                list = list.filter(r => r.client.toLowerCase().includes(clientQuery));
+            }
+
+            currentRealized = list;
+            let totalUsd = list.reduce((acc, r) => acc + (r.costUsd || 0), 0);
+            let totalBcv = list.filter(r => r.paymentType === 'bcv').reduce((acc, r) => acc + (r.costUsd || 0), 0);
+            let totalDivisa = list.filter(r => r.paymentType !== 'bcv').reduce((acc, r) => acc + (r.costUsd || 0), 0);
+
+            document.getElementById('stat-count').innerText = list.length;
+            document.getElementById('stat-usd').innerText = `$${totalUsd.toFixed(2)}`;
+            document.getElementById('stat-bcv').innerText = `$${totalBcv.toFixed(2)}`;
+            document.getElementById('stat-divisa').innerText = `$${totalDivisa.toFixed(2)}`;
+
+            tbody.innerHTML = list.length === 0 ? `<tr><td colspan="9" class="p-4 text-center text-slate-400">No hay trabajos realizados en este periodo.</td></tr>` : '';
+            list.forEach(rec => {
+                tbody.innerHTML += `<tr class="hover:bg-cyan-50/40">
+                    <td data-label="Cliente" class="td-main p-3.5 font-semibold">${escHtml(rec.client)}</td>
+                    <td data-label="Ubicación" class="p-3.5">${escHtml(rec.location)}</td>
+                    <td data-label="Trabajo" class="p-3.5">${escHtml(rec.work)}</td>
+                    <td data-label="Fecha" class="p-3.5">${escHtml(rec.serviceDate)}</td>
+                    <td data-label="Pago" class="p-3.5">${escHtml(rec.paymentType)}</td>
+                    <td data-label="USD" class="p-3.5">$${rec.costUsd.toFixed(2)}</td>
+                    <td data-label="Bs" class="p-3.5">${rec.paymentType === 'bcv' ? (rec.costUsd * rec.bcvRate).toFixed(2) + ' Bs' : 'N/A'}</td>
+                    <td data-label="Observaciones" class="p-3.5"><input type="text" value="${escHtml(rec.observations || '')}" onchange="updateObservation(${rec.id}, this.value)" class="border rounded px-2 py-1 text-xs w-full"></td>
+                    <td data-label="Acciones" class="td-actions p-3.5 flex gap-2 justify-end">
+                        <button onclick="deleteRecord(${rec.id})" class="text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+            });
+            lucide.createIcons();
+        }
+
+        function updateObservation(id, val) {
+            const rec = records.find(r => r.id === id);
+            if (rec) { rec.observations = val; saveItem('records', rec); }
+        }
+
+        const COMPANY = {
+            name: 'Profiltros Hogar, C.A.',
+            rif: 'J-50150423-7',
+            phone: '0412-698.81.15',
+            address: 'Calle 23 de Enero, Local S/N, Sector La Aduana, Barcelona, Estado Anzoátegui',
+            email: 'profiltroshogar@gmail.com',
+            instagram: 'Profiltroshogar.c.a',
+            facebook: 'profiltrohoga Ca'
+        };
+        const COMPANY_FIELDS = Object.keys(COMPANY);
+
+        function renderCompany() {
+            document.getElementById('header-company-name').textContent = COMPANY.name;
+            document.getElementById('login-company-name').textContent = COMPANY.name;
+        }
+
+        function openCompanyModal() {
+            COMPANY_FIELDS.forEach(f => { document.getElementById('company-' + f).value = COMPANY[f] || ''; });
+            document.getElementById('company-modal').classList.remove('hidden');
+        }
+
+        function closeCompanyModal() { document.getElementById('company-modal').classList.add('hidden'); }
+
+        document.getElementById('company-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            COMPANY_FIELDS.forEach(f => { COMPANY[f] = document.getElementById('company-' + f).value.trim(); });
+            enqueue('settings/company', 'PUT', { ...COMPANY });
+            renderCompany();
+            closeCompanyModal();
+        });
+
+        let logoVersion;
+        function applyLogo(src) {
+            ['login-logo', 'header-logo', 'footer-logo', 'company-logo-preview'].forEach(id => {
+                const el = document.getElementById(id);
+                if (src) el.src = src; else el.removeAttribute('src');
+            });
+        }
+
+        document.getElementById('company-logo-input').addEventListener('change', async function() {
+            const file = this.files && this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const dataUrl = e.target.result;
+                const res = await api('settings/logo', { method: 'PUT', body: JSON.stringify({ dataUrl }) });
+                applyLogo('/api/logo?v=' + res.logoVersion);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function removeCompanyLogo() {
+            await api('settings/logo', { method: 'DELETE' });
+            applyLogo(null);
+        }
+
+        function downloadHistoryNote() {
+            alert("Función de descarga PNG lista.");
+        }
+
+        // Descarga segura del respaldo completo directo desde la ruta /api/backup
+        async function downloadFullDatabaseBackup() {
+            try {
+                const res = await fetch('/api/backup');
+                if (!res.ok) throw new Error('Error al descargar');
+                const fullDb = await res.json();
+                const jsonStr = JSON.stringify(fullDb, null, 2);
+                const blob = new Blob([jsonStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'database.json';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert("No se pudo obtener el respaldo completo de la base de datos.");
+            }
+        }
+
+        function checkAlerts() {}
+
+        window.onload = () => {
+            if (sessionStorage.getItem('profiltros_logged') === 'true') {
+                showPanel();
+            }
+        };
+    </script>
+</body>
+</html>
