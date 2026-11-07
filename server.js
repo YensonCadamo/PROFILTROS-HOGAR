@@ -2,8 +2,6 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,24 +9,6 @@ const DB_FILE = path.join(__dirname, 'database.json');
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Configuración e inicialización de WhatsApp Web
-const whatsappClient = new Client({
-    authStrategy: new LocalAuth()
-});
-
-whatsappClient.on('qr', (qr) => {
-    console.log('==================================================');
-    console.log('Escanea este código QR con el WhatsApp del negocio:');
-    console.log('==================================================');
-    qrcode.generate(qr, { small: true });
-});
-
-whatsappClient.on('ready', () => {
-    console.log('¡WhatsApp conectado y listo para enviar mensajes automáticos!');
-});
-
-whatsappClient.initialize();
 
 const defaultDb = {
     master: 'admin',
@@ -218,7 +198,7 @@ app.delete('/api/receivables/:id', (req, res) => {
     res.json({ success: true });
 });
 
-// Envío de correo electrónico
+// Envío de correo electrónico para recordatorio de cobro
 app.post('/api/receivables/send-email', async (req, res) => {
     const { to, clientName, concept, amountUsd, dueDate, companyName } = req.body;
     if (!to) {
@@ -249,30 +229,6 @@ app.post('/api/receivables/send-email', async (req, res) => {
     } catch (error) {
         console.error('Error al enviar correo:', error);
         res.status(500).json({ error: 'No se pudo enviar el correo electrónico. Verifique la configuración SMTP.' });
-    }
-});
-
-// Envío automático de WhatsApp
-app.post('/api/receivables/send-whatsapp', async (req, res) => {
-    const { phone, clientName, concept, amountUsd, dueDate, companyName } = req.body;
-    if (!phone) {
-        return res.status(400).json({ error: 'El cliente no tiene un número de teléfono registrado.' });
-    }
-
-    try {
-        let cleanPhone = phone.replace(/\D/g, '');
-        if (!cleanPhone.startsWith('58') && cleanPhone.length === 10) {
-            cleanPhone = '58' + cleanPhone; // Ajuste automático para código de área local (Venezuela +58)
-        }
-        const chatId = `${cleanPhone}@c.us`;
-
-        const message = `¡Hola *${clientName}*! 👋\n\nLe escribimos de parte de *${companyName || 'Profiltros Hogar, C.A.'}* para recordarle su saldo pendiente:\n\n📌 *Concepto:* ${concept}\n💰 *Monto:* $${Number(amountUsd).toFixed(2)} USD\n📅 *Fecha límite:* ${dueDate}\n\nAgradecemos su pronta cancelación. ¡Muchas gracias! 🙏`;
-
-        await whatsappClient.sendMessage(chatId, message);
-        res.json({ success: true, message: 'Mensaje de WhatsApp enviado exitosamente.' });
-    } catch (error) {
-        console.error('Error al enviar WhatsApp:', error);
-        res.status(500).json({ error: 'No se pudo enviar el mensaje por WhatsApp. Asegúrate de que el servidor esté vinculado escaneando el código QR en la terminal.' });
     }
 });
 
