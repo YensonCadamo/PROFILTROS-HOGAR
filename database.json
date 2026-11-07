@@ -9,8 +9,15 @@
   "clients": [
     {
       "id": 1794015833910,
-      "name": "Yensan Cadamo",
+      "name": "Yenson Cadamo",
       "location": "Lecherias",
+      "phone": "04129420724",
+      "registeredAt": "2026-11-06"
+    },
+    {
+      "id": 1794017666309,
+      "name": "PROYECTOS OCAS C,A ",
+      "location": "AV. EULALIA BUROZ LOCAL PARCELA DE TERRENO NRO S/N ZONA POLIGONO DE TIRO BARCELONA ANZOATEGUI",
       "phone": "04129420724",
       "registeredAt": "2026-11-06"
     }
